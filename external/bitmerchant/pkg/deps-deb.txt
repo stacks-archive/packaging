@@ -1,0 +1,5 @@
+python2.7
+python-cachetools
+python-six
+python-ecdsa
+python-base58
