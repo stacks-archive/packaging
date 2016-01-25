@@ -46,7 +46,9 @@ for pkg in $DEPS; do
 done
 
 mkdir -p "$OUTPUT"
-pushd "$OUTPUT"
+pushd "$OUTPUT" >/dev/null
 fpm --force -s dir -t deb -a "$ARCH" -v "$VERSION" -n "$NAME" $DEPARGS -C $ROOT --license "$LICENSE" --vendor "$VENDOR" --maintainer "$MAINTAINER" --url "$URL" --description "$DESCRIPTION" $(ls "$ROOT")
-popd
+RC=$?
+popd >/dev/null
 
+exit $RC
