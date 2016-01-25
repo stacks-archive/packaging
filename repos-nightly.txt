@@ -1,0 +1,19 @@
+base58 https://github.com/blockstack/base58 develop
+basicrpc https://github.com/blockstack/basicrpc develop
+bitcoin https://github.com/vbuterin/pybitcointools develop
+bitcoinrpc https://github.com/jgarzik/python-bitcoinrpc develop
+bitmerchant https://github.com/sbuss/bitmerchant develop
+blockstore https://github.com/blockstack/blockstore develop
+blockstore-client https://github.com/blockstack/blockstore-client develop
+cachetools https://github.com/tkem/cachetools develop
+commontools https://github.com/blockstack/commontools develop
+future
+kademlia https://github.com/bmuller/kademlia develop
+keychain-manager-py https://github.com/blockstack/keychain-manager-py develop
+protocoin https://github.com/perone/protocoin develop
+pybitcoin https://github.com/blockstack/pybitcoin develop
+rpcudp https://github.com/bmuller/rpcudp develop
+txjsonrpc https://github.com/oubiwann/txjsonrpc develop
+umsgpack https://github.com/minrk/umsgpack develop
+utilitybelt https://github.com/blockstack/utilitybelt develop
+virtualchain https://github.com/blockstack/virtualchain develop

@@ -1,0 +1,19 @@
+base58 https://github.com/blockstack/base58 master
+basicrpc https://github.com/blockstack/basicrpc master
+bitcoin https://github.com/vbuterin/pybitcointools master
+bitcoinrpc https://github.com/jgarzik/python-bitcoinrpc master
+bitmerchant https://github.com/sbuss/bitmerchant master
+blockstore https://github.com/blockstack/blockstore master
+blockstore-client https://github.com/blockstack/blockstore-client master
+cachetools https://github.com/tkem/cachetools master
+commontools https://github.com/blockstack/commontools master
+future
+kademlia https://github.com/bmuller/kademlia master
+keychain-manager-py https://github.com/blockstack/keychain-manager-py master
+protocoin https://github.com/perone/protocoin master
+pybitcoin https://github.com/blockstack/pybitcoin master
+rpcudp https://github.com/bmuller/rpcudp master
+txjsonrpc https://github.com/oubiwann/txjsonrpc master
+umsgpack https://github.com/minrk/umsgpack master
+utilitybelt https://github.com/blockstack/utilitybelt master
+virtualchain https://github.com/blockstack/virtualchain master
