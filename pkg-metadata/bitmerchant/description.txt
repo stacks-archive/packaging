@@ -1,0 +1,1 @@
+A free, self-hostable bitcoin wallet made for merchants.

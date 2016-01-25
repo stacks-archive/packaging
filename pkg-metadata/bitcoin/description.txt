@@ -1,0 +1,1 @@
+Simple, common-sense Bitcoin-themed Python ECC library

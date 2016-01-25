@@ -1,0 +1,10 @@
+python2.7
+python-basicrpc
+python-boto
+python-commontools
+python-ecdsa
+python-pybitcoin
+python-bitcoinrpc
+python-requests
+python-utilitybelt
+python-protocoin
