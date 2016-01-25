@@ -1,15 +1,42 @@
-DEBS=debs/
-REPO=../
+ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+
+BUILD := $(ROOT_DIR)/build
+DEBS_OUT := $(BUILD)/debs
+DEBS_SRC := $(ROOT_DIR)/debs/
+
+DEBS_REPO_OUT := $(BUILD)/repositories/debian
+
+REPO_LIST ?= $(ROOT_DIR)/repos-stable.txt
+
+BUILD_SRC=$(BUILD)/src
+BUILD_PKG=$(BUILD)/pkg
+
+GPGKEYID ?= DB858875   # Jude's package-signing key ID
 
 .PHONY: all
-all: debs
+all: debian-repository
 
-debs: debs-clean
-	./build-packages.sh "$(REPO)" "$(DEBS)"
-	$(MAKE) -C "$(DEBS)"
+$(BUILD):
+	@mkdir -p "$(BUILD)"
+
+.PHONY: repos
+repos: $(BUILD)
+	./fetch-repos.sh "$(REPO_LIST)" "$(BUILD_SRC)"
+
+.PHONY: metadata
+metadata: $(BUILD) repos
+	./gen-metadata.sh "$(BUILD_SRC)" "$(BUILD_PKG)"
+
+debs: $(BUILD) repos metadata
+	@mkdir -p "$(DEBS_OUT)"
+	./build-packages.sh "$(BUILD_SRC)" "$(BUILD_PKG)" "$(DEBS_OUT)"
+
+debian-repository: debs
+	@mkdir -p "$(DEBS_REPO_OUT)"
+	$(MAKE) -C "$(DEBS_SRC)" REPO_OUT=$(DEBS_REPO_OUT) DEBS=$(DEBS_OUT) GPGKEYID=$(GPGKEYID)
 
 .PHONY: clean
-clean: debs-clean
+clean: build-clean
 
-debs-clean:
-	$(MAKE) -C "$(DEBS)" clean
+build-clean:
+	@rm -rf "$(BUILD)"
