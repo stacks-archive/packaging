@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# This script takes a Python source directory with a top-level setup.py file,
+# and builds and installs the Python package to a temporary directory.
+# If it succeeds, the last line emitted to stdout will be "SUCCESS: $BUILD_DIR",
+# so other scripts can locate the directory and go from there.
+
 PKG_DIR="$1"
 BUILD_DIR=
 
