@@ -1,63 +1,51 @@
 #!/bin/bash
 
+# This script iterates through a set of source repositories and a matching set of 
+# package metadata directories, and generates a Linux package for each.  At this time,
+# it is assumed that the repository is a Python source repository, and the output
+# package format is .deb.  It uses the build-python.sh script (in the current directory)
+# to generate an installation tree, and uses the deb.sh script (in the current directory)
+# to create the .deb.
+
 REPO_DIR="$1"
-PKGS_DIR="$2"
+PKGMD_DIR="$2"
+PKGS_DIR="$3"
 PACKAGING_DIR="."
+
+BUILD_PYTHON="./build-python.sh"
 
 set -u
 
 usage() {
-   echo >&2 "Usage: $0 REPO_DIR PACKAGE_OUTPUT_DIR"
+   echo >&2 "Usage: $0 REPO_SRC_DIR PKG_METADATA_DIR PACKAGE_OUTPUT_DIR"
    exit 1
 }
 
-# is a package external from Blockstack?
-# that is, does it have a separate package metadata directory,
-# under PACKAGING_DIR/external?
-#  $1  package name
-is_external() {
-
-   local PACKAGE_NAME 
-
-   PACKAGE_NAME="$1"
-   if ! [ -d "$PACKAGING_DIR/external/$PACKAGE_NAME" ]; then 
-      # nope
-      return 1
-   fi
-
-   return 0
-}
-
-
-if [ -z "$REPO_DIR" ] || [ -z "PKGS_DIR" ]; then 
+if [ -z "$REPO_DIR" ] || [ -z "$PKGMD_DIR" ]; then 
    usage
    exit 1
 fi
 
-# NOTE: packages do not have spaces
-for PACKAGE in $(ls "$REPO_DIR"); do
+mkdir -p "$PKGS_DIR"
+
+while IFS= read PACKAGE; do
 
    RC=
-   PKG_DIR=
    SRC_DIR="$REPO_DIR/$PACKAGE"
+   PKG_DIR="$PKGMD_DIR/$PACKAGE"
 
-   if [ "$PACKAGE" = "packaging" ]; then 
-      continue
-   fi
-
-   if is_external "$PACKAGE"; then 
-      PKG_DIR="$PACKAGING_DIR/external/$PACKAGE/pkg"
-   else
-      PKG_DIR="$REPO_DIR/$PACKAGE/pkg"
+   if ! [ -d "$REPO_DIR" ]; then 
+      echo >&2 "FATAL: source directory not found: $SRC_DIR"
+      exit 1
    fi
 
    if ! [ -d "$PKG_DIR" ]; then 
-      echo >&2 "BUG: configuration error: packaging metadata directory not found: $PKG_DIR"
+      echo >&2 "FATAL: packaging metadata directory not found: $PKG_DIR"
       exit 1
    fi
 
    # build...
-   BUILD_DIR="$(./build-python.sh "$SRC_DIR" | tail -n 1 | grep "SUCCESS:")"
+   BUILD_DIR="$("$BUILD_PYTHON" "$SRC_DIR" | tail -n 1 | grep "SUCCESS:")"
    RC=$?
 
    if [ $RC -ne 0 ]; then 
@@ -76,12 +64,16 @@ for PACKAGE in $(ls "$REPO_DIR"); do
    RC=$?
 
    echo "rm -rf $BUILD_DIR"
+   rm -rf "$BUILD_DIR"
 
    if [ $RC -ne 0 ]; then
       echo >&2 "Failed to package $SRC_DIR"
       exit 1
    fi
-done
+
+done <<EOF
+$(ls "$REPO_DIR")
+EOF
 
 exit 0
 
