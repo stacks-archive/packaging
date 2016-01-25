@@ -1,8 +1,0 @@
-Origin: 54.158.146.52
-Label: apt-repository
-Codename: jessie
-Architectures: i386 amd64 armel armhf arm64
-Components: main
-Description: Blockstack APT repository
-SignWith: DB858875
-Pull: jessie
