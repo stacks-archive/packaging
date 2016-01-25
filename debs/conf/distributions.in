@@ -1,0 +1,8 @@
+Origin: packages.blockstack.org
+Label: apt-repository
+Codename: jessie
+Architectures: i386 amd64 armel armhf arm64
+Components: main
+Description: Blockstack APT repository
+SignWith: @GPGKEYID@
+Pull: jessie
