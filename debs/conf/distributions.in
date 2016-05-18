@@ -1,8 +1,8 @@
-Origin: packages.blockstack.org
+Origin: 23.96.59.114
 Label: apt-repository
-Codename: jessie
+Codename: @DEBIAN_RELEASE@
 Architectures: i386 amd64 armel armhf arm64
 Components: main
 Description: Blockstack APT repository
 SignWith: @GPGKEYID@
-Pull: jessie
+Pull: @DEBIAN_RELEASE@
