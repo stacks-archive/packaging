@@ -1,6 +1,0 @@
-python-commontools
-python-ecdsa
-python-pybitcoin
-python-bitcoin
-python-requests
-python-utilitybelt

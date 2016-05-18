@@ -1,1 +1,0 @@
-txJSON-RPC allows you to create async Python JSON-RPC servers and clients either over HTTP or directly on TCP with the Netstring protocol.

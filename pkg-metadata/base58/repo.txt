@@ -1,0 +1,1 @@
+nightly https://github.com/blockstack/base58 master

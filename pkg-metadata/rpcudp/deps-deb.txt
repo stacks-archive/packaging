@@ -1,3 +1,0 @@
-python-twisted
-python-umsgpack
-python-future

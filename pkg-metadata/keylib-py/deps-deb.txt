@@ -1,0 +1,4 @@
+python2.7
+python-ecdsa
+python-requests
+python-utilitybelt
