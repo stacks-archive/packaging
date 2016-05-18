@@ -6,10 +6,12 @@ DEBS_SRC := $(ROOT_DIR)/debs/
 
 DEBS_REPO_OUT := $(BUILD)/repositories/debian
 
-REPO_LIST ?= $(ROOT_DIR)/repos-stable.txt
+RELEASE ?= nightly
 
 BUILD_SRC=$(BUILD)/src
 BUILD_PKG=$(BUILD)/pkg
+
+PKG_METADATA="./pkg-metadata"
 
 GPGKEYID ?= DB858875   # Jude's package-signing key ID
 
@@ -21,7 +23,7 @@ $(BUILD):
 
 .PHONY: repos
 repos: $(BUILD)
-	./fetch-repos.sh "$(REPO_LIST)" "$(BUILD_SRC)"
+	./fetch-repos.sh $(PKG_METADATA) "$(BUILD_SRC)" "$(RELEASE)"
 
 .PHONY: metadata
 metadata: $(BUILD) repos
