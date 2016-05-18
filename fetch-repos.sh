@@ -9,38 +9,26 @@
 # If [repo-url] is not given, then it is assumed to be local, and should
 # be present under ./imported.
 
-REPO_LIST="$1"
+MD_DIR="$1"
 REPO_DIR="$2"
+RELEASE="$3"
 IMPORTED="./imported"
 
 set -u 
 
-if [ -z "$REPO_LIST" ] || [ -z "$REPO_DIR" ]; then 
-   echo >&2 "Usage: $0 REPO_LIST REPO_DIR"
+if [ -z "$MD_DIR" ] || [ -z "$REPO_DIR" ] || [ -z "$RELEASE" ]; then 
+   echo >&2 "Usage: $0 MD_DIR REPO_DIR RELEASE"
    exit 1
 fi
 
 mkdir -p "$REPO_DIR"
 
-while IFS= read PKG_LINE; do
-   
-   IFS=" "
-   set $PKG_LINE
+while IFS= read PKG_MD_DIR; do
 
-   REPO_NAME="$1"
-   REPO_URL=""
-   BRANCH="master"
+   REPO_MD_FILE="$MD_DIR/$PKG_MD_DIR/repo.txt"
+   REPO_NAME="$PKG_MD_DIR"
 
-   if [ $# -eq 2 ]; then 
-      REPO_URL="$2"
-   elif [ $# -eq 3 ]; then
-      REPO_URL="$2" 
-      BRANCH="$3"
-   fi
-
-   RC=
-
-   if [ -z "$REPO_URL" ]; then 
+   if ! [ -f "$REPO_MD_FILE" ]; then
       # should be imported 
       if ! [ -d "$IMPORTED/$REPO_NAME" ]; then 
          echo >&2 "Missing imported repository \"$REPO_NAME\" (expected it in $IMPORTED/$REPO_NAME)"
@@ -48,8 +36,22 @@ while IFS= read PKG_LINE; do
       fi
 
       cp -a "$IMPORTED/$REPO_NAME" "$REPO_DIR/"
+      continue
 
    else
+
+      # need to fetch 
+      REPO_LINE="$(egrep ^"$RELEASE" "$REPO_MD_FILE")"
+      if [ -z "$REPO_LINE" ]; then 
+         continue
+      fi
+
+      IFS=" "
+      set $REPO_LINE
+      
+      REPO_URL="$2"
+      BRANCH="$3"
+      RC=
     
       if ! [ -d "$REPO_DIR/$REPO_NAME" ]; then 
          # fetch 
@@ -92,7 +94,7 @@ while IFS= read PKG_LINE; do
       popd >/dev/null
    fi
 done <<EOF
-$(cat "$REPO_LIST")
+$(ls "$MD_DIR")
 EOF
 
 exit 0
