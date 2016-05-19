@@ -7,9 +7,12 @@ DEBS_SRC := $(ROOT_DIR)/debs/
 DEBS_REPO_OUT := $(BUILD)/repositories/debian
 
 RELEASE ?= nightly
+DEBIAN_RELEASE ?= xenial 
 
 BUILD_SRC=$(BUILD)/src
 BUILD_PKG=$(BUILD)/pkg
+
+DEPLOY_SCRIPT=./deploy.sh
 
 PKG_METADATA="./pkg-metadata"
 
@@ -35,7 +38,11 @@ debs: $(BUILD) repos metadata
 
 debian-repository: debs
 	@mkdir -p "$(DEBS_REPO_OUT)"
-	$(MAKE) -C "$(DEBS_SRC)" REPO_OUT=$(DEBS_REPO_OUT) DEBS=$(DEBS_OUT) GPGKEYID=$(GPGKEYID)
+	$(MAKE) -C "$(DEBS_SRC)" REPO_OUT=$(DEBS_REPO_OUT) DEBS=$(DEBS_OUT) GPGKEYID=$(GPGKEYID) DEBIAN_RELEASE=$(DEBIAN_RELEASE)
+
+.PHONY: deploy
+deploy:
+	$(SHELL) -x $(DEPLOY_SCRIPT) $(DEBS_REPO_OUT)
 
 .PHONY: clean
 clean: build-clean
