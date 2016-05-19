@@ -2,4 +2,4 @@ python2.7
 python-cryptography
 python-keylib
 python-requests
-python-utilitybelt
+python-blockstack-utilitybelt

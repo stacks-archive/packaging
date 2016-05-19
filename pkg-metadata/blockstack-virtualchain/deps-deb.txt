@@ -1,4 +1,4 @@
 python2.7
 python-pybitcoin
 python-bitcoinrpc
-python-utilitybelt
+python-blockstack-utilitybelt

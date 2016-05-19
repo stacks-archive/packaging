@@ -1,8 +1,8 @@
 python2.7
 python-requests
 python-ecdsa
-python-commontools
-python-utilitybelt
+python-blockstack-commontools
+python-blockstack-utilitybelt
 python-bitcoinrpc
 python-keychain
 python-bitcoin

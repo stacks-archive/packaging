@@ -7,4 +7,5 @@ python-blockstack-utxo
 python-defusedxml
 python-blockstack-virtualchain
 python-pybitcoin
+python-protocoin
 python-dev
