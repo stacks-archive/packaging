@@ -2,7 +2,7 @@
 
 # deploy script 
 REPO_KEY=~/.ssh/blockstack-apt.rsa
-REPO_HOST=23.96.59.114
+REPO_HOST=packages.blockstack.com
 REPO_USER=ubuntu
 REPO_NAME=ubuntu
 REPO_SRV=/var/www/html/repositories
