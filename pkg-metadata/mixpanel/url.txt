@@ -1,0 +1,1 @@
+https://github.com/mixpanel/mixpanel-python
