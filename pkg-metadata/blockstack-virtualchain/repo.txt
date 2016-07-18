@@ -1,1 +1,1 @@
-nightly https://github.com/blockstack/virtualchain develop
+nightly https://github.com/blockstack/virtualchain master

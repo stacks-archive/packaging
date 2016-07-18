@@ -1,1 +1,1 @@
-nightly https://github.com/blockstack/blockstack-client develop
+nightly https://github.com/blockstack/blockstack-client master

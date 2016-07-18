@@ -1,1 +1,1 @@
-nightly https://github.com/blockstack/blockstack-server hotfix-notwisted
+nightly https://github.com/blockstack/blockstack-server master

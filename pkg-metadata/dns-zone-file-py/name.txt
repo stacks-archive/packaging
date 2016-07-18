@@ -1,1 +1,1 @@
-python-blockstack-zone-file
+python-blockstack-zones
