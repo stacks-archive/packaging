@@ -1,0 +1,43 @@
+# generated in part from 'homebrew-pypi-poet'
+# to generate:
+# * create a virtualenv
+# * pip install blockstack-client
+# * pip install homebrew-pypi-poet
+# * poet blockstack > /path/to/resources
+
+class Blockstack < Formula
+  desc "Blockstack command-line client"
+  homepage "https://blockstack.org"
+  url @@PACKAGE_URL@@
+  sha256 @@PACKAGE_SHA256@@
+
+  # NOTE: must be added manually, after using `poet`
+  depends_on :python if MacOS.version <= :snow_leopard
+  depends_on "openssl"
+  depends_on "libffi"
+
+@@RESOURCES@@
+
+  def install
+    ENV.prepend_create_path "PYTHONPATH", libexec/"vendor/lib/python2.7/site-packages"
+
+    # NOTE: this extra path must be added manually, in order for cryptography to work (since it uses pkg_resources, which must be the one *brew* installed, not the OS X one (which is out of date))
+    ENV.prepend_create_path "PYTHONPATH", "/usr/local/lib/python2.7/site-packages"
+
+    %w[base58 basicrpc bitcoin bitmerchant blockstack-profiles blockstack-storage-drivers blockstack-utxo blockstack-zones boto cachetools cffi commontools cryptography defusedxml ecdsa enum34 idna ipaddress jsontokens keychain keylib mixpanel protocoin pyasn1 pybitcoin pycparser pycrypto python-bitcoinrpc requests six utilitybelt virtualchain].each do |r|
+      resource(r).stage do
+        system "python", *Language::Python.setup_install_args(libexec/"vendor")
+      end
+    end
+
+    ENV.prepend_create_path "PYTHONPATH", libexec/"lib/python2.7/site-packages"
+    system "python", *Language::Python.setup_install_args(libexec)
+
+    bin.install Dir[libexec/"bin/*"]
+    bin.env_script_all_files(libexec/"bin", :PYTHONPATH => ENV["PYTHONPATH"])
+  end
+
+  test do
+    false
+  end
+end
