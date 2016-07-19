@@ -10,3 +10,4 @@ python-defusedxml
 python-keylib
 python-mixpanel
 python-crypto
+python-protocoin
