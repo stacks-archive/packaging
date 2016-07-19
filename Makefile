@@ -14,6 +14,9 @@ BUILD_PKG=$(BUILD)/pkg
 
 DEPLOY_SCRIPT=./deploy.sh
 
+BREW_SCRIPT=./build-brew.sh
+BREW_IN=./brew/blockstack.rb.in
+
 PKG_METADATA="./pkg-metadata"
 
 GPGKEYID ?= DB858875   # Jude's package-signing key ID
@@ -43,6 +46,11 @@ debian-repository: debs
 .PHONY: deploy
 deploy:
 	$(SHELL) -x $(DEPLOY_SCRIPT) $(DEBS_REPO_OUT)
+
+.PHONY: brew
+brew:
+	@mkdir -p "$(BUILD)/brew"
+	$(SHELL) -x $(BREW_SCRIPT) $(BREW_IN) $(BUILD)/brew/blockstack.rb
 
 .PHONY: clean
 clean: build-clean
