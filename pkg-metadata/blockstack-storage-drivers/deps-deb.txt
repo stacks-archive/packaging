@@ -1,4 +1,0 @@
-python2.7
-python-boto
-python-basicrpc
-python-pybitcoin

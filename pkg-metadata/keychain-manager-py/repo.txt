@@ -1,1 +1,2 @@
 nightly https://github.com/blockstack/keychain-manager-py master
+stable https://github.com/blockstack/keychain-manager-py master

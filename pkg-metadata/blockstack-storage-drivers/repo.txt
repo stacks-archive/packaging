@@ -1,1 +1,0 @@
-nightly https://github.com/blockstack/blockstack-storage-drivers master

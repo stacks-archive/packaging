@@ -1,0 +1,2 @@
+nightly https://github.com/blockstack/blockstack-gpg master
+stable https://github.com/blockstack/blockstack-gpg master

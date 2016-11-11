@@ -1,1 +1,2 @@
 nightly https://github.com/sbuss/bitmerchant master
+stable https://github.com/sbuss/bitmerchant master

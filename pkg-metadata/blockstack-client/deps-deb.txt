@@ -4,8 +4,6 @@ python-blockstack-virtualchain
 python-blockstack-profiles
 python-pybitcoin
 python-blockstack-zones
-python-blockstack-storage-drivers
-python-blockstack-utxo
 python-defusedxml
 python-keylib
 python-mixpanel

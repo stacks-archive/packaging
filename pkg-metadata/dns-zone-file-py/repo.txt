@@ -1,1 +1,2 @@
-nightly https://github.com/blockstack/dns-zone-file-py master
+nightly https://github.com/blockstack/dns-zone-file-py rc-0.14.0
+stable https://github.com/blockstack/dns-zone-file-py rc-0.14.0

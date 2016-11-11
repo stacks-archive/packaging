@@ -1,1 +1,2 @@
 nightly https://github.com/blockstack/commontools master
+stable https://github.com/blockstack/commontools master

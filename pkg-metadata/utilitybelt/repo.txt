@@ -1,1 +1,2 @@
 nightly https://github.com/blockstack/utilitybelt master
+stable https://github.com/blockstack/utilitybelt master

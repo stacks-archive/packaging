@@ -1,1 +1,2 @@
 nightly https://github.com/blockstack/base58 master
+stable https://github.com/blockstack/base58 master

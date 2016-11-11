@@ -1,1 +1,2 @@
 nightly https://github.com/perone/protocoin master
+stable https://github.com/perone/protocoin master

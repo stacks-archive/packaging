@@ -2,5 +2,4 @@ python2.7
 python-keychain
 python-defusedxml
 blockstack
-python-blockstack-virtualchain
 python-crypto

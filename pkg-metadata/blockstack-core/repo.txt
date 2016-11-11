@@ -1,1 +1,2 @@
 nightly https://github.com/blockstack/blockstack-server master
+stable https://github.com/blockstack/blockstack-server master

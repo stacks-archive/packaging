@@ -1,1 +1,2 @@
 nightly https://github.com/jgarzik/python-bitcoinrpc master
+stable https://github.com/jgarzik/python-bitcoinrpc master
