@@ -12,17 +12,22 @@ DEBIAN_RELEASE ?= xenial
 BUILD_SRC=$(BUILD)/src
 BUILD_PKG=$(BUILD)/pkg
 
-DEPLOY_SCRIPT=./deploy.sh
+DEPLOY_DEBS_SCRIPT=./deploy-debs.sh
+DEPLOY_PYPI_SCRIPT=./deploy-pypi.sh
 
 BREW_SCRIPT=./build-brew.sh
 BREW_IN=./brew/blockstack.rb.in
 
 PKG_METADATA="./pkg-metadata"
 
-GPGKEYID ?= DB858875   # Jude's package-signing key ID
+# Jude's package-signing key ID
+GPGKEYID ?= DB858875
+
+# must be populated locally; not in git
+PYPI_SECRETS ?= $(ROOT_DIR)/pypi-secrets/
 
 .PHONY: all
-all: debian-repository
+all: debian-repository deploy-pypi
 
 $(BUILD):
 	@mkdir -p "$(BUILD)"
@@ -43,14 +48,20 @@ debian-repository: debs
 	@mkdir -p "$(DEBS_REPO_OUT)"
 	$(MAKE) -C "$(DEBS_SRC)" REPO_OUT=$(DEBS_REPO_OUT) DEBS=$(DEBS_OUT) GPGKEYID=$(GPGKEYID) DEBIAN_RELEASE=$(DEBIAN_RELEASE)
 
-.PHONY: deploy
-deploy:
-	$(SHELL) -x $(DEPLOY_SCRIPT) $(DEBS_REPO_OUT)
+.PHONY: deploy deploy-debs deploy-pypi
+
+deploy: deploy-debs deploy-pypi
+
+deploy-debs:
+	$(SHELL) -x $(DEPLOY_DEBS_SCRIPT) "$(DEBS_REPO_OUT)"
+
+deploy-pypi: $(BUILD) repos metadata
+	$(SHELL) -x $(DEPLOY_PYPI_SCRIPT) "$(BUILD_SRC)" "$(BUILD_PKG)" "$(PYPI_SECRETS)"
 
 .PHONY: brew
 brew:
 	@mkdir -p "$(BUILD)/brew"
-	$(SHELL) -x $(BREW_SCRIPT) $(BREW_IN) $(BUILD)/brew/blockstack.rb
+	$(SHELL) -x $(BREW_SCRIPT) "$(BREW_IN)" "$(BUILD)/brew/blockstack.rb"
 
 .PHONY: clean
 clean: build-clean
