@@ -63,5 +63,12 @@ for MD in "license" "version" "name" "url" "description"; do
    fi
 done
 
+# optional 
+for MD_FILE in "pypi.txt"; do
+   if [ -f "$PKG_METADATA/$PKG_NAME/$MD_FILE" ]; then 
+      cp "$PKG_METADATA/$PKG_NAME/$MD_FILE" "$PKG_DIR/$MD_FILE"
+   fi
+done
+
 exit 0
 
