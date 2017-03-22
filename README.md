@@ -1,4 +1,4 @@
-Packaging Scripts
+Blockstack Core Packaging Scripts
 =================
 
 This repository contains the necessary scripts and tools to create signed Linux package repositories.  Currently, they support creating Debian/Ubuntu repositories from Python source packages.
