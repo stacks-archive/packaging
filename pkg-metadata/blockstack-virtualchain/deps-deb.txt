@@ -1,4 +1,9 @@
 python2.7
-python-pybitcoin
 python-bitcoinrpc
-python-blockstack-utilitybelt
+python-keylib
+python-simplejson
+python-protocoin
+python-jsonschema
+python-cryptography
+python-ecdsa
+python-six
