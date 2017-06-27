@@ -23,7 +23,7 @@ virtualenv "$ENV_DIR" || cleanup_exit 1
 
 source "$ENV_DIR/bin/activate" || cleanup_exit 1
 
-curl "https://pypi.io/pypi/blockstack/json" > "$PYPI_JSON" || cleanup_exit 1
+curl -L "https://pypi.io/pypi/blockstack/json" > "$PYPI_JSON" || cleanup_exit 1
 
 PACKAGE_URL="$(cat "$PYPI_JSON" | jq '.urls[0].url')" || cleanup_exit 1
 PACKAGE_SHA256="$(cat "$PYPI_JSON" | jq '.urls[0].digests.sha256')" || cleanup_exit 1
