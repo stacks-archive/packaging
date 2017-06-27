@@ -1,2 +1,0 @@
-nightly https://github.com/vbuterin/pybitcointools master
-stable https://github.com/vbuterin/pybitcointools master

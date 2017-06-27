@@ -1,3 +1,0 @@
-python2.7
-blockstack
-blockstack-gpg
