@@ -6,7 +6,7 @@ DEBS_SRC := $(ROOT_DIR)/debs/
 
 DEBS_REPO_OUT := $(BUILD)/repositories/debian
 
-RELEASE ?= nightly
+RELEASE ?= stable
 DEBIAN_RELEASE ?= xenial 
 
 BUILD_SRC=$(BUILD)/src
@@ -27,7 +27,7 @@ GPGKEYID ?= DB858875
 PYPI_SECRETS ?= $(ROOT_DIR)/pypi-secrets/
 
 .PHONY: all
-all: debian-repository deploy-pypi
+all: debian-repository 
 
 $(BUILD):
 	@mkdir -p "$(BUILD)"
@@ -50,7 +50,7 @@ debian-repository: debs
 
 .PHONY: deploy deploy-debs deploy-pypi
 
-deploy: deploy-debs deploy-pypi
+deploy: deploy-debs 
 
 deploy-debs:
 	$(SHELL) -x $(DEPLOY_DEBS_SCRIPT) "$(DEBS_REPO_OUT)"
