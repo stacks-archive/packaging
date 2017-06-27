@@ -1,0 +1,2 @@
+nightly https://github.com/blockstack/blockstack-core rc-0.14.2
+stable https://github.com/blockstack/blockstack-core master

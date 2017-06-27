@@ -1,0 +1,15 @@
+python2.7
+python-keychain
+python-defusedxml
+python-dev
+python-blockstack-virtualchain
+python-blockstack-profiles
+python-blockstack-zones
+python-keylib
+python-mixpanel
+python-protocoin
+python-scrypt
+python-simplejson
+python-jsonschema
+python-basicrpc
+python-boto
