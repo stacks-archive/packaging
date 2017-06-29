@@ -13,3 +13,4 @@ python-simplejson
 python-jsonschema
 python-basicrpc
 python-boto
+python-pip
