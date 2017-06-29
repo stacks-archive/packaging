@@ -44,9 +44,16 @@ while IFS= read PACKAGE; do
       exit 1
    fi
 
-   # build...
-   BUILD_DIR="$("$BUILD_PYTHON" "$SRC_DIR" | tail -n 1 | grep "SUCCESS:")"
-   RC=$?
+   if [ -f "$PKG_DIR/builder.txt" ]; then
+       echo "custom builder..."
+       BUILD_CMD="$(cat $PKG_DIR/builder.txt)"
+       BUILD_DIR="$("$BUILD_CMD" "$SRC_DIR" | tail -n 1 | grep "SUCCESS:")"
+       RC=$?
+   else
+       # build...
+       BUILD_DIR="$("$BUILD_PYTHON" "$SRC_DIR" | tail -n 1 | grep "SUCCESS:")"
+       RC=$?
+   fi
 
    if [ $RC -ne 0 ]; then 
       echo >&2 "Failed to build $SRC_DIR"

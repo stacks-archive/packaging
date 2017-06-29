@@ -1,0 +1,2 @@
+nightly https://github.com/bcwaldon/warlock master
+stable https://github.com/bcwaldon/warlock master

@@ -3,3 +3,4 @@ python-cryptography
 python-keylib
 python-blockstack-zones
 python-jsontokens
+python-warlock
