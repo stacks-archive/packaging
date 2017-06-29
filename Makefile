@@ -40,11 +40,7 @@ repos: $(BUILD)
 metadata: $(BUILD) repos
 	./gen-metadata.sh "$(BUILD_SRC)" "$(BUILD_PKG)"
 
-browser-deb:
-	@mkdir -p "$(DEBS_OUT)"
-	./make-browser.sh "$(BUILD_SRC)" "$(DEBS_OUT)"
-
-debs: $(BUILD) repos metadata browser-deb
+debs: $(BUILD) repos metadata
 	@mkdir -p "$(DEBS_OUT)"
 	./build-packages.sh "$(BUILD_SRC)" "$(BUILD_PKG)" "$(DEBS_OUT)"
 

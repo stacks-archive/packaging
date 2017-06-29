@@ -21,8 +21,10 @@ if [ -z "$REPO_DIR" ] || [ -z "$PKG_DIR" ]; then
 fi
 
 if ! [ -f "$REPO_DIR/setup.py" ]; then 
-   echo >&2 "FATAL: Directory $REPO_DIR does not have a setup.py file"
-   exit 1
+    if ! [ -f "$REPO_DIR/package.json" ]; then
+	echo >&2 "FATAL: Directory $REPO_DIR does not have a setup.py file"
+	exit 1
+    fi
 fi
 
 # generate each piece of metadata 
@@ -44,27 +46,52 @@ for MD_FILE in "arch.txt" "deps-deb.txt" "maintainer.txt"; do
     cp "$PKG_METADATA/$PKG_NAME/$MD_FILE" "$PKG_DIR/$MD_FILE"
 done
 
-# generate the rest from the setup.py, unless specifically overridden 
-for MD in "license" "version" "name" "url" "description"; do 
+if [ -f "$REPO_DIR/package.json" ]; then
+    for MD in "license" "version" "name" "description"; do
 
-   if [ -f "$PKG_METADATA/$PKG_NAME/$MD.txt" ]; then 
-      cp "$PKG_METADATA/$PKG_NAME/$MD.txt" "$PKG_DIR/$MD.txt"
-   else
-      pushd "$REPO_DIR" >/dev/null
-      DAT="$(python ./setup.py --${MD})"
-      popd >/dev/null
+	if [ -f "$PKG_METADATA/$PKG_NAME/$MD.txt" ]; then 
+	    cp "$PKG_METADATA/$PKG_NAME/$MD.txt" "$PKG_DIR/$MD.txt"
+	else
+	    pushd "$REPO_DIR" >/dev/null
+	    DAT="$(cat ./package.json | jq .$MD)"
+	    popd >/dev/null
 
-      if [ "$DAT" = "UNKNOWN" ]; then 
-          echo >&2 "FATAL: unknown $MD must be overridden (Hint: put it in $PKG_METADATA/$PKG_NAME/$MD.txt)"
-          exit 1
-      fi
+	    if [ "$DAT" = "UNKNOWN" ]; then 
+		echo >&2 "FATAL: unknown $MD must be overridden (Hint: put it in $PKG_METADATA/$PKG_NAME/$MD.txt)"
+		exit 1
+	    fi
+	    echo "$DAT" | sed -e 's/"$//' -e 's/^"//' > "$PKG_DIR/$MD.txt"
+	fi
+    done
+    pushd "$REPO_DIR" >/dev/null
+    DAT="$(cat ./package.json | jq .repository.url | head -n 1)"
+    popd >/dev/null
+    echo "$DAT" | sed -e 's/"$//' -e 's/^"//' > "$PKG_DIR/url.txt"
+fi
 
-      echo "$DAT" > "$PKG_DIR/$MD.txt"
-   fi
-done
+if [ -f "$REPO_DIR/setup.py" ]; then
+    # generate the rest from the setup.py, unless specifically overridden 
+    for MD in "license" "version" "name" "url" "description"; do 
+
+	if [ -f "$PKG_METADATA/$PKG_NAME/$MD.txt" ]; then 
+	    cp "$PKG_METADATA/$PKG_NAME/$MD.txt" "$PKG_DIR/$MD.txt"
+	else
+	    pushd "$REPO_DIR" >/dev/null
+	    DAT="$(python ./setup.py --${MD})"
+	    popd >/dev/null
+
+	    if [ "$DAT" = "UNKNOWN" ]; then 
+		echo >&2 "FATAL: unknown $MD must be overridden (Hint: put it in $PKG_METADATA/$PKG_NAME/$MD.txt)"
+		exit 1
+	    fi
+
+	    echo "$DAT" > "$PKG_DIR/$MD.txt"
+	fi
+    done
+fi
 
 # optional 
-for MD_FILE in "pypi.txt"; do
+for MD_FILE in "pypi.txt" "builder.txt"; do
    if [ -f "$PKG_METADATA/$PKG_NAME/$MD_FILE" ]; then 
       cp "$PKG_METADATA/$PKG_NAME/$MD_FILE" "$PKG_DIR/$MD_FILE"
    fi
