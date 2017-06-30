@@ -1,0 +1,2 @@
+nightly https://github.com/blockstack/pybitcoin/ master
+stable https://github.com/blockstack/pybitcoin/ master

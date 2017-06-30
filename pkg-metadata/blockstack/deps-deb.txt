@@ -14,3 +14,5 @@ python-jsonschema
 python-basicrpc
 python-boto
 python-pip
+python-xmlrunner
+python-pybitcoin >= 0.9.8
