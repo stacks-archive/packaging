@@ -2,8 +2,8 @@ python2.7
 python-keychain
 python-defusedxml
 python-dev
-python-blockstack-virtualchain
-python-blockstack-profiles
+python-blockstack-virtualchain >= 0.14.2
+python-blockstack-profiles >= 0.14.1
 python-blockstack-zones
 python-keylib
 python-mixpanel
