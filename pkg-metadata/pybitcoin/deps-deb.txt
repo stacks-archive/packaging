@@ -1,0 +1,8 @@
+python2.7
+python-ecdsa >= 0.13
+python-requests >= 2.4.3
+python-blockstack-utilitybelt >= 0.2.6
+python-blockstack-commontools >= 0.1.1
+python-bitcoinrpc
+python-keychain >= 0.1.4
+python-bitcoin >= 1.1.42
