@@ -70,12 +70,12 @@ while IFS= read PACKAGE; do
    ./deb.sh "$PKG_DIR" "$BUILD_DIR" "$PKGS_DIR"
    RC=$?
 
-   echo "rm -rf $BUILD_DIR"
-   rm -rf "$BUILD_DIR"
-
    if [ $RC -ne 0 ]; then
       echo >&2 "Failed to package $SRC_DIR"
       exit 1
+   else
+       echo "rm -rf $BUILD_DIR"
+       rm -rf "$BUILD_DIR"
    fi
 
 done <<EOF

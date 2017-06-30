@@ -40,16 +40,20 @@ if [ -z "$ARCH" ]; then
    ARCH="$(uname -p)"
 fi
 
-DEPARGS=""
+
+DEPARGS=( )
 while read -r pkg; do
-   DEPARGS="$DEPARGS -d $pkg"
+    DEPARGS=( "${DEPARGS[@]}" "-d" "$pkg" )
 done <<< "$DEPS"
+
+echo $DEPARGS
 
 mkdir -p "$OUTPUT"
 pushd "$OUTPUT" >/dev/null
 set -x
-fpm --force -s dir -t deb -a "$ARCH" -v "$VERSION" -n "$NAME" $DEPARGS -C $ROOT --license "$LICENSE" --vendor "$VENDOR" --maintainer "$MAINTAINER" --url "$URL" --description "$DESCRIPTION" $(ls "$ROOT")
+fpm --force -s dir -t deb -a "$ARCH" -v "$VERSION" -n "$NAME"  "${DEPARGS[@]}" -C $ROOT --license "$LICENSE" --vendor "$VENDOR" --maintainer "$MAINTAINER" --url "$URL" --description "$DESCRIPTION" $(ls "$ROOT")
 RC=$?
+unset -x
 popd >/dev/null
 
 exit $RC
