@@ -63,6 +63,7 @@ while IFS= read PKG_MD_DIR; do
       else
          # refresh 
          pushd "$REPO_DIR/$REPO_NAME" >/dev/null
+	 git checkout master
          git pull
          RC=$?
          popd >/dev/null
@@ -83,12 +84,16 @@ while IFS= read PKG_MD_DIR; do
          exit 1
       fi
 
-      git pull
-      RC=$?
+      if grep -q "^ref:" .git/HEAD; then
+	  git pull
+	  RC=$?
 
-      if [ $RC -ne 0 ]; then 
-         echo >&2 "Failed to pull latest branch \"$BRANCH\" in $REPO_DIR/$REPO_NAME"
-         exit 1
+	  if [ $RC -ne 0 ]; then
+              echo >&2 "Failed to pull latest branch \"$BRANCH\" in $REPO_DIR/$REPO_NAME"
+              exit 1
+	  fi
+      else
+	  echo "Skipping pull, on detached head."
       fi
 
       popd >/dev/null

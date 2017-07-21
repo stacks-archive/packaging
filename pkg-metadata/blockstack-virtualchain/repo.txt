@@ -1,2 +1,2 @@
-nightly https://github.com/blockstack/virtualchain master
-stable https://github.com/blockstack/virtualchain master
+nightly https://github.com/blockstack/virtualchain rc-0.14.3
+stable https://github.com/blockstack/virtualchain rc-0.14.3

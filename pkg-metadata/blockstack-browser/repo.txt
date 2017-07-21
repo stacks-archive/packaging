@@ -1,2 +1,2 @@
-nightly https://github.com/blockstack/blockstack-browser v0.11
-stable https://github.com/blockstack/blockstack-browser master
+nightly https://github.com/blockstack/blockstack-browser v0.11.1
+stable https://github.com/blockstack/blockstack-browser v0.11.1
