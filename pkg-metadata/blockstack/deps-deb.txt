@@ -16,3 +16,4 @@ python-boto
 python-pip
 python-xmlrunner
 python-pybitcoin >= 0.9.8
+python-dropbox >= 7.1.1

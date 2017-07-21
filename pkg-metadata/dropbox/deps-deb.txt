@@ -1,0 +1,4 @@
+python-six
+python-urllib3
+python-requests
+python2.7

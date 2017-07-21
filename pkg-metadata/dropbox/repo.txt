@@ -1,0 +1,2 @@
+nightly git://github.com/dropbox/dropbox-sdk-python.git master
+stable git://github.com/dropbox/dropbox-sdk-python.git v8.0.0
