@@ -51,14 +51,10 @@ pushd "$PKG_SRC" > /dev/null
 # register
 test -d dist/ && rm -rf dist/
 python ./setup.py sdist
-TWINE_REPOSITORY="$REPO" TWINE_REPOSITORY_URL="$REPO" TWINE_USERNAME="$PYPI_USER" TWINE_PASSWORD="$PYPI_SECRET" twine register dist/*
+   
+# upload 
+TWINE_USERNAME="$PYPI_USER" TWINE_PASSWORD="$PYPI_SECRET" twine upload dist/*
 RC=$?
-
-if [ $RC -eq 0 ]; then 
-   # upload 
-   TWINE_REPOSITORY="$REPO" TWINE_REPOSITORY_URL="$REPO" TWINE_USERNAME="$PYPI_USER" TWINE_PASSWORD="$PYPI_SECRET" twine upload dist/*
-   RC=$?
-fi
 
 popd > /dev/null
 
