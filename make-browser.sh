@@ -37,6 +37,7 @@ cp native/blockstackProxy.js $OUTPATH
 echo "Install the CORS Proxy"
 mkdir -p $OUTPATH/corsproxy/node_modules
 npm install corsproxy --prefix $OUTPATH/corsproxy
+chmod -R 0555 $OUTPATH/corsproxy
 
 echo "Make run scripts"
 
