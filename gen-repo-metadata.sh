@@ -71,6 +71,10 @@ fi
 
 if [ -f "$REPO_DIR/setup.py" ]; then
     # generate the rest from the setup.py, unless specifically overridden 
+	pushd "$REPO_DIR" >/dev/null
+	TOSSOUT="$(python ./setup.py --license)"
+	popd >/dev/null
+
     for MD in "license" "version" "name" "url" "description"; do 
 
 	if [ -f "$PKG_METADATA/$PKG_NAME/$MD.txt" ]; then 
