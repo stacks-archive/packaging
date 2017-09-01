@@ -1,5 +1,8 @@
 #!/bin/bash
 
+BROWSER_CONTAINER_REPO=quay.io/blockstack/blockstack-browser
+CORE_CONTAINER_REPO=quay.io/blockstack/blockstack-core
+
 trap '[ "$?" -eq 0 ] || read -p "Looks like something went wrong in step ´$STEP´... Press any key to continue..."' EXIT
 
 # TODO: I'm sure this is not very robust.  But, it is needed for now to ensure
@@ -74,15 +77,15 @@ STEP="Finalize"
 clear
 cat << EOF
 
+    ...     ...
+   .   .   .   .
+   ,,..    ,,..
+                    B L O C K S T A C K
+    ...     ...
+   .   .   .   .
+   ,,..    ,,..
 
-                        ##         .
-                  ## ## ##        ==
-               ## ## ## ## ##    ===
-           /"""""""""""""""""\___/ ===
-      ~~~ {~~ ~~~~ ~~~ ~~~~ ~~~ ~ /  ===- ~~~
-           \______ o           __/
-             \    \         __/
-              \____\_______/
+
 
 EOF
 echo -e "${BLUE}docker${NC} is configured to use the ${GREEN}${VM}${NC} machine with IP ${GREEN}$(${DOCKER_MACHINE} ip ${VM})${NC}"
@@ -94,6 +97,11 @@ docker () {
   MSYS_NO_PATHCONV=1 docker.exe "$@"
 }
 export -f docker
+
+docker pull ${CORE_CONTAINER_REPO}:latest
+docker pull ${BROWSER_CONTAINER_REPO}:latest
+
+launcher start
 
 if [ $# -eq 0 ]; then
   echo "Start interactive shell"
