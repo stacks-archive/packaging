@@ -1,7 +1,7 @@
-#define MyAppName "Docker Toolbox"
-#define MyAppPublisher "Docker"
-#define MyAppURL "https://docker.com"
-#define MyAppContact "https://docker.com"
+#define MyAppName "Blockstack Browser"
+#define MyAppPublisher "Blockstack"
+#define MyAppURL "https://blockstack.org"
+#define MyAppContact "https://blockstack.org"
 
 #define b2dIsoPath "..\bundle\boot2docker.iso"
 #define dockerCli "..\bundle\docker.exe"
@@ -13,7 +13,7 @@
 
 [Setup]
 AppCopyright={#MyAppPublisher}
-AppId={{FC4417F0-D7F3-48DB-BCE1-F5ED5BAFFD91}
+AppId={{3EFFB428-AFF2-4AAF-81C5-0C812995B250}
 AppContact={#MyAppContact}
 AppComments={#MyAppURL}
 AppName={#MyAppName}
@@ -24,11 +24,11 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 ArchitecturesAllowed=x64
 ArchitecturesInstallIn64BitMode=x64
-DefaultDirName={pf}\{#MyAppName}
-DefaultGroupName=Docker
+DefaultDirName={pf}\Blockstack Toolbox
+DefaultGroupName=Blockstack
 DisableProgramGroupPage=yes
 DisableWelcomePage=no
-OutputBaseFilename=DockerToolbox
+OutputBaseFilename=BlockstackToolbox
 Compression=lzma
 SolidCompression=yes
 WizardImageFile=windows-installer-side.bmp
@@ -46,15 +46,16 @@ Name: "full"; Description: "Full installation"
 Name: "custom"; Description: "Custom installation"; Flags: iscustom
 
 [Run]
-Filename: "{win}\explorer.exe"; Parameters: "{userprograms}\Docker\"; Flags: postinstall skipifsilent; Description: "View Shortcuts in File Explorer"
+Filename: "{win}\explorer.exe"; Parameters: "{userprograms}\Blockstack\"; Flags: postinstall skipifsilent; Description: "View Shortcuts in File Explorer"
 
 [Tasks]
 Name: desktopicon; Description: "{cm:CreateDesktopIcon}"
-Name: modifypath; Description: "Add docker binaries to &PATH"
+Name: modifypath; Description: "Add Blockstack and Docker binaries to &PATH"
 Name: upgradevm; Description: "Upgrade Boot2Docker VM"
 Name: vbox_ndis5; Description: "Install VirtualBox with NDIS5 driver[default NDIS6]"; Components: VirtualBox; Flags: unchecked
 
 [Components]
+Name: "BlockstackDocker"; Description: "Blockstack Launcher" ; Types: full custom; Flags: fixed
 Name: "Docker"; Description: "Docker Client for Windows" ; Types: full custom; Flags: fixed
 Name: "DockerMachine"; Description: "Docker Machine for Windows" ; Types: full custom; Flags: fixed
 Name: "DockerCompose"; Description: "Docker Compose for Windows" ; Types: full custom
@@ -62,10 +63,10 @@ Name: "VirtualBox"; Description: "VirtualBox"; Types: full custom; Flags: disabl
 Name: "Git"; Description: "Git for Windows"; Types: full custom; Flags: disablenouninstallwarning
 
 [Files]
-Source: ".\docker-quickstart-terminal.ico"; DestDir: "{app}"; Flags: ignoreversion
+Source: ".\blockstack.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#dockerCli}"; DestDir: "{app}"; Flags: ignoreversion; Components: "Docker"
 Source: ".\start.sh"; DestDir: "{app}"; Flags: ignoreversion; Components: "Docker"
-Source: ".\launcher"; DestDir: "{app}"; Flags: ignoreversion; Components: "Docker"
+Source: ".\launcher"; DestDir: "{app}"; Flags: ignoreversion; Components: "BlockstackDocker"
 Source: "{#dockerMachineCli}"; DestDir: "{app}"; Flags: ignoreversion; Components: "DockerMachine"
 Source: "{#dockerComposeCli}"; DestDir: "{app}"; Flags: ignoreversion; Components: "DockerCompose"
 Source: "{#b2dIsoPath}"; DestDir: "{app}"; Flags: ignoreversion; Components: "DockerMachine"; AfterInstall: CopyBoot2DockerISO()
@@ -74,8 +75,8 @@ Source: "{#virtualBoxCommon}"; DestDir: "{app}\installers\virtualbox"; Component
 Source: "{#virtualBoxMsi}"; DestDir: "{app}\installers\virtualbox"; DestName: "virtualbox.msi"; AfterInstall: RunInstallVirtualBox(); Components: "VirtualBox"
 
 [Icons]
-Name: "{userprograms}\Docker\Docker Quickstart Terminal"; WorkingDir: "{app}"; Filename: "{pf64}\Git\bin\bash.exe"; Parameters: "--login -i ""{app}\start.sh"""; IconFilename: "{app}/docker-quickstart-terminal.ico"; Components: "Docker"
-Name: "{commondesktop}\Docker Quickstart Terminal"; WorkingDir: "{app}"; Filename: "{pf64}\Git\bin\bash.exe"; Parameters: "--login -i ""{app}\start.sh"""; IconFilename: "{app}/docker-quickstart-terminal.ico"; Tasks: desktopicon; Components: "Docker"
+Name: "{userprograms}\Blockstack\Blockstack Browser"; WorkingDir: "{app}"; Filename: "{pf64}\Git\bin\bash.exe"; Parameters: "--login -i ""{app}\start.sh"""; IconFilename: "{app}/blockstack.ico"; Components: "Docker"
+Name: "{commondesktop}\Blockstack Browser"; WorkingDir: "{app}"; Filename: "{pf64}\Git\bin\bash.exe"; Parameters: "--login -i ""{app}\start.sh"""; IconFilename: "{app}/blockstack.ico"; Tasks: desktopicon; Components: "Docker"
 
 [UninstallRun]
 Filename: "{app}\docker-machine.exe"; Parameters: "rm -f default"
@@ -97,7 +98,7 @@ var
   filepath: String;
   ansiresult: AnsiString;
 begin
-  dirpath := ExpandConstant('{userappdata}\DockerToolbox');
+  dirpath := ExpandConstant('{userappdata}\BlockstackToolbox');
   filepath := dirpath + '\id.txt';
   ForceDirectories(dirpath);
 
@@ -193,8 +194,8 @@ begin
 
     // Don't do this until we can compare versions
     // Wizardform.ComponentsList.Checked[3] := NeedToInstallVirtualBox();
-    Wizardform.ComponentsList.ItemEnabled[3] := not NeedToInstallVirtualBox();
-    Wizardform.ComponentsList.Checked[4] := NeedToInstallGit();
+    Wizardform.ComponentsList.ItemEnabled[4] := not NeedToInstallVirtualBox();
+    Wizardform.ComponentsList.Checked[5] := NeedToInstallGit();
 end;
 
 function InitializeSetup(): boolean;

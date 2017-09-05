@@ -18,5 +18,5 @@ docker build \
 	.
 CONTAINER="$(docker run -d windows-installer)"
 mkdir -p dist
-docker cp "${CONTAINER}":/installer/Output/DockerToolbox.exe dist/
+docker cp "${CONTAINER}":/installer/Output/BlockstackToolbox.exe dist/
 docker rm "${CONTAINER}" 2>/dev/null || true
