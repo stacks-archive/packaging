@@ -44,7 +44,7 @@ start () {
   # Check for the blockstack-api container is running or stopped.
   if [ "$(docker ps -q -f name=$corecontainer)" ]; then
     echo "blockstack core container is already running"
-    exit 1
+    return
   elif [ ! "$(docker ps -q -f name=$corecontainer)" ]; then
     if [ "$(docker ps -aq -f status=exited -f name=$corecontainer)" ]; then
       # cleanup old container if its still around
@@ -54,12 +54,10 @@ start () {
 
     # If there is no existing $corecontainer container, run one
     if [[ $(uname) == 'Linux' ]]; then
-      docker run -d --name $corecontainer -v $homedir:$containerdir -p 6270:6270 $coreimage blockstack api start-foreground --password $1 --api_password $1
+      docker run -d --name $corecontainer -v "$homedir":$containerdir -p 6270:6270 $coreimage blockstack api start-foreground --password $1 --api_password $1
     elif [[ $(uname) == 'Darwin' ]]; then
-      docker run -d --name $corecontainer -v $homedir:$containerdir -p 6270:6270 $coreimage blockstack api start-foreground --password $1 --api_password $1
+      docker run -d --name $corecontainer -v "$homedir":$containerdir -p 6270:6270 $coreimage blockstack api start-foreground --password $1 --api_password $1
     elif [[ $(uname) == 'Windows' || $(uname) == 'MINGW64_NT-10.0' ]]; then
-      echo "Don't know if this works!!!"
-      set -x
       docker run -d --name $corecontainer -v "$homedir":$containerdir -p 6270:6270 $coreimage blockstack api start-foreground --password $1 --api_password $1
     fi
   fi
@@ -67,7 +65,7 @@ start () {
   # Check for the blockstack-browser-* containers are running or stopped.
   if [ "$(docker ps -q -f name=$browsercontainer)" ]; then
     echo "browser containers are already running"
-    exit 1
+    return
   elif [ ! "$(docker ps -q -f name=$browsercontainer)" ]; then
     if [ "$(docker ps -aq -f status=exited -f name=$browsercontainer)" ]; then
       # cleanup old containers if they are still around
@@ -78,16 +76,15 @@ start () {
     # If there are no existing blockstack-browser-* containers, run them
     if [[ $(uname) == 'Linux' ]]; then
       docker run -d --name $browsercontainer-static -p 8888:8888 $browserimage blockstack-browser
-      docker run -d --name $browsercontainer-cors -p 1337:1337 $browserimage blockstack-cors-proxy
+      docker run -d --name $browsercontainer-cors  -e CORSPROXY_HOST="0.0.0.0" -p 1337:1337 $browserimage blockstack-cors-proxy
       sensible-browser "http://localhost:8888/#coreAPIPassword=$1"
     elif [[ $(uname) == 'Darwin' ]]; then
       docker run -d --name $browsercontainer-static -p 8888:8888 $browserimage blockstack-browser
-      docker run -d --name $browsercontainer-cors -p 1337:1337 $browserimage blockstack-cors-proxy
+      docker run -d --name $browsercontainer-cors  -e CORSPROXY_HOST="0.0.0.0" -p 1337:1337 $browserimage blockstack-cors-proxy
       open "http://localhost:8888/#coreAPIPassword=$1"
     elif [[ $(uname) == 'Windows' || $(uname) == 'MINGW64_NT-10.0' ]]; then
-      echo "Don't know if this works!!!"
       docker run -d --name $browsercontainer-static -p 8888:8888 $browserimage blockstack-browser
-      docker run -d --name $browsercontainer-cors -p 1337:1337 $browserimage blockstack-cors-proxy
+      docker run -d --name $browsercontainer-cors  -e CORSPROXY_HOST="0.0.0.0" -p 1337:1337 $browserimage blockstack-cors-proxy
     fi
   fi
 }

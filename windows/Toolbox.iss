@@ -7,7 +7,6 @@
 #define dockerCli "..\bundle\docker.exe"
 #define dockerMachineCli "..\bundle\docker-machine.exe"
 #define dockerComposeCli "..\bundle\docker-compose.exe"
-#define kitematic "..\bundle\kitematic"
 #define git "..\bundle\Git.exe"
 #define virtualBoxCommon "..\bundle\common.cab"
 #define virtualBoxMsi "..\bundle\VirtualBox_amd64.msi"
@@ -60,7 +59,6 @@ Name: "Docker"; Description: "Docker Client for Windows" ; Types: full custom; F
 Name: "DockerMachine"; Description: "Docker Machine for Windows" ; Types: full custom; Flags: fixed
 Name: "DockerCompose"; Description: "Docker Compose for Windows" ; Types: full custom
 Name: "VirtualBox"; Description: "VirtualBox"; Types: full custom; Flags: disablenouninstallwarning
-Name: "Kitematic"; Description: "Kitematic for Windows (Alpha)" ; Types: full custom
 Name: "Git"; Description: "Git for Windows"; Types: full custom; Flags: disablenouninstallwarning
 
 [Files]
@@ -70,23 +68,17 @@ Source: ".\start.sh"; DestDir: "{app}"; Flags: ignoreversion; Components: "Docke
 Source: ".\launcher"; DestDir: "{app}"; Flags: ignoreversion; Components: "Docker"
 Source: "{#dockerMachineCli}"; DestDir: "{app}"; Flags: ignoreversion; Components: "DockerMachine"
 Source: "{#dockerComposeCli}"; DestDir: "{app}"; Flags: ignoreversion; Components: "DockerCompose"
-Source: "{#kitematic}\*"; DestDir: "{app}\kitematic"; Flags: ignoreversion recursesubdirs; Components: "Kitematic"
 Source: "{#b2dIsoPath}"; DestDir: "{app}"; Flags: ignoreversion; Components: "DockerMachine"; AfterInstall: CopyBoot2DockerISO()
 Source: "{#git}"; DestDir: "{app}\installers\git"; DestName: "git.exe"; AfterInstall: RunInstallGit();  Components: "Git"
 Source: "{#virtualBoxCommon}"; DestDir: "{app}\installers\virtualbox"; Components: "VirtualBox"
 Source: "{#virtualBoxMsi}"; DestDir: "{app}\installers\virtualbox"; DestName: "virtualbox.msi"; AfterInstall: RunInstallVirtualBox(); Components: "VirtualBox"
 
 [Icons]
-Name: "{userprograms}\Docker\Kitematic (Alpha)"; WorkingDir: "{app}"; Filename: "{app}\kitematic\Kitematic.exe"; Components: "Kitematic"
-Name: "{commondesktop}\Kitematic (Alpha)"; WorkingDir: "{app}"; Filename: "{app}\kitematic\Kitematic.exe"; Tasks: desktopicon; Components: "Kitematic"
 Name: "{userprograms}\Docker\Docker Quickstart Terminal"; WorkingDir: "{app}"; Filename: "{pf64}\Git\bin\bash.exe"; Parameters: "--login -i ""{app}\start.sh"""; IconFilename: "{app}/docker-quickstart-terminal.ico"; Components: "Docker"
 Name: "{commondesktop}\Docker Quickstart Terminal"; WorkingDir: "{app}"; Filename: "{pf64}\Git\bin\bash.exe"; Parameters: "--login -i ""{app}\start.sh"""; IconFilename: "{app}/docker-quickstart-terminal.ico"; Tasks: desktopicon; Components: "Docker"
 
 [UninstallRun]
 Filename: "{app}\docker-machine.exe"; Parameters: "rm -f default"
-
-[UninstallDelete]
-Type: filesandordirs; Name: "{localappdata}\..\Roaming\Kitematic"
 
 [Registry]
 Root: HKCU; Subkey: "Environment"; ValueType:string; ValueName:"DOCKER_TOOLBOX_INSTALL_PATH"; ValueData:"{app}" ; Flags: preservestringtype uninsdeletevalue;
@@ -198,31 +190,11 @@ begin
 
   WizardForm.WelcomeLabel2.AutoSize := True;
 
-  TrackingCheckBox := TNewCheckBox.Create(WizardForm);
-  TrackingCheckBox.Top := WizardForm.WelcomeLabel2.Top + WizardForm.WelcomeLabel2.Height + 10;
-  TrackingCheckBox.Left := WizardForm.WelcomeLabel2.Left;
-  TrackingCheckBox.Width := WizardForm.WelcomeLabel2.Width;
-  TrackingCheckBox.Height := 28;
-  TrackingCheckBox.Caption := 'Help Docker improve Toolbox.';
-  TrackingCheckBox.Checked := True;
-  TrackingCheckBox.Parent := WelcomePage.Surface;
-
-  TrackingLabel := TLabel.Create(WizardForm);
-  TrackingLabel.Parent := WelcomePage.Surface;
-  TrackingLabel.Font := WizardForm.WelcomeLabel2.Font;
-  TrackingLabel.Font.Color := clGray;
-  TrackingLabel.Caption := 'This collects anonymous data to help us detect installation problems and improve the overall experience. We only use it to aggregate statistics and will never share it with third parties.';
-  TrackingLabel.WordWrap := True;
-  TrackingLabel.Visible := True;
-  TrackingLabel.Left := WizardForm.WelcomeLabel2.Left;
-  TrackingLabel.Width := WizardForm.WelcomeLabel2.Width;
-  TrackingLabel.Top := TrackingCheckBox.Top + TrackingCheckBox.Height + 5;
-  TrackingLabel.Height := 100;
 
     // Don't do this until we can compare versions
     // Wizardform.ComponentsList.Checked[3] := NeedToInstallVirtualBox();
     Wizardform.ComponentsList.ItemEnabled[3] := not NeedToInstallVirtualBox();
-    Wizardform.ComponentsList.Checked[5] := NeedToInstallGit();
+    Wizardform.ComponentsList.Checked[4] := NeedToInstallGit();
 end;
 
 function InitializeSetup(): boolean;
@@ -234,16 +206,10 @@ end;
 function NextButtonClick(CurPageID: Integer): Boolean;
 begin
   if CurPageID = wpWelcome then begin
-      if TrackingCheckBox.Checked then begin
-        TrackEventWithProperties('Continued from Overview', '"Tracking Enabled": "Yes"');
-        TrackingDisabled := False;
-        DeleteFile(ExpandConstant('{userappdata}\..\.docker\machine\no-error-report'));
-      end else begin
         TrackEventWithProperties('Continued from Overview', '"Tracking Enabled": "No"');
         TrackingDisabled := True;
         CreateDir(ExpandConstant('{userappdata}\..\.docker\machine'));
         SaveStringToFile(ExpandConstant('{userappdata}\..\.docker\machine\no-error-report'), '', False);
-      end;
   end;
   Result := True
 end;

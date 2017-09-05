@@ -61,6 +61,10 @@ if [ $VM_EXISTS_CODE -eq 1 ]; then
     PROXY_ENV="$PROXY_ENV --engine-env NO_PROXY=$NO_PROXY"
   fi
   "${DOCKER_MACHINE}" create -d virtualbox $PROXY_ENV "${VM}"
+
+  "${VBOXMANAGE}" controlvm "${VM}" natpf1 core,tcp,localhost,6270,localhost,6270
+  "${VBOXMANAGE}" controlvm "${VM}" natpf1 cors,tcp,localhost,1337,localhost,1337
+  "${VBOXMANAGE}" controlvm "${VM}" natpf1 browser,tcp,localhost,8888,localhost,8888
 fi
 
 STEP="Checking status on $VM"
@@ -103,10 +107,12 @@ docker pull ${BROWSER_CONTAINER_REPO}:latest
 
 launcher start PASSWORD
 
-if [ $# -eq 0 ]; then
-  echo "Start interactive shell"
-  exec "$BASH" --login -i
-else
-  echo "Start shell with command"
-  exec "$BASH" -c "$*"
-fi
+trap "launcher stop PASSWORD ; echo 'Closing'" SIGINT SIGTERM
+trap "launcher stop PASSWORD ; echo 'Closing'" EXIT
+
+echo "Blockstack is running. Hit Ctrl-C to Exit."
+
+while :
+do
+  sleep 60
+done

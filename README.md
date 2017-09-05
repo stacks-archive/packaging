@@ -13,6 +13,12 @@ For running on Windows, you must enable VT-X (hardware virtualization support). 
 Enable-WindowsOptionalFeature -Online -FeatureName:Microsoft-Hyper-V -All
 ```
 
+You may also need to run
+
+```
+bcdedit /set hypervisorlaunchtype auto
+```
+
 You can see this Microsoft article for more information on VT-X (https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v).
 
 ## Building the Blockstack Docker Toolbox
