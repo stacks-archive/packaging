@@ -101,7 +101,7 @@ export -f docker
 docker pull ${CORE_CONTAINER_REPO}:latest
 docker pull ${BROWSER_CONTAINER_REPO}:latest
 
-launcher start
+launcher start PASSWORD
 
 if [ $# -eq 0 ]; then
   echo "Start interactive shell"
