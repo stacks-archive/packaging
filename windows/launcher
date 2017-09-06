@@ -12,6 +12,11 @@ corecontainer=blockstack-api
 # Name of Blockstack Browser container
 browsercontainer=blockstack-browser
 
+tmpdir=$HOME/.blockstack_tmp
+
+password=0
+DEBUG=0
+
 build () {
   echo "Building blockstack docker image. This might take a minute..."
   docker build -t $browserimage .
@@ -31,14 +36,20 @@ create-wallet () {
 
 start () {
   # Check for args first
-  if [ $# -eq 0 ]; then
-    echo "Need to input password for wallet located in the $HOME/.blockstack folder when staring api: ./launcher start mypass"
-    exit 1
+  if [ $# -ne 0 ]; then
+      password=$1
   fi
 
   if [ ! -e "$homedir/wallet.json" ]; then
+    if [ $password == "0" ]; then
+      prompt-new-password
+    fi
     echo "Wallet does not exist yet. Setting up wallet"
-    create-wallet $1
+    create-wallet $password
+  fi
+
+  if [ $password == "0" ]; then
+      prompt-password
   fi
 
   # Check for the blockstack-api container is running or stopped.
@@ -50,15 +61,28 @@ start () {
       # cleanup old container if its still around
       echo "removing old blockstack-core container..."
       docker rm $corecontainer
+      if [[ -e "$tmpdir" ]]; then
+         rm -rf "$tmpdir"
+      fi
+    fi
+
+    if [ $DEBUG == "1" ]; then
+        runcommand="bash"
+    else
+        runcommand="blockstack api start-foreground --password $password --api_password $password"
     fi
 
     # If there is no existing $corecontainer container, run one
     if [[ $(uname) == 'Linux' ]]; then
-      docker run -d --name $corecontainer -v "$homedir":$containerdir -p 6270:6270 $coreimage blockstack api start-foreground --password $1 --api_password $1
+      docker run -dt --name $corecontainer -v "$tmpdir":/tmp -v "$homedir":$containerdir -p 6270:6270 $coreimage $runcommand
     elif [[ $(uname) == 'Darwin' ]]; then
-      docker run -d --name $corecontainer -v "$homedir":$containerdir -p 6270:6270 $coreimage blockstack api start-foreground --password $1 --api_password $1
+      docker run -dt --name $corecontainer -v "$tmpdir":/tmp -v "$homedir":$containerdir -p 6270:6270 $coreimage $runcommand
     elif [[ $(uname) == 'Windows' || $(uname) == 'MINGW64_NT-10.0' ]]; then
-      docker run -d --name $corecontainer -v "$homedir":$containerdir -p 6270:6270 $coreimage blockstack api start-foreground --password $1 --api_password $1
+      docker run -dt --name $corecontainer -v "$tmpdir":/tmp -v "$homedir":$containerdir -p 6270:6270 $coreimage $runcommand
+    fi
+
+    if [ $DEBUG == "1" ]; then
+        docker exec -t $corecontainer blockstack api start --debug --password $password --api_password $password
     fi
   fi
 
@@ -77,11 +101,11 @@ start () {
     if [[ $(uname) == 'Linux' ]]; then
       docker run -d --name $browsercontainer-static -p 8888:8888 $browserimage blockstack-browser
       docker run -d --name $browsercontainer-cors  -e CORSPROXY_HOST="0.0.0.0" -p 1337:1337 $browserimage blockstack-cors-proxy
-      sensible-browser "http://localhost:8888/#coreAPIPassword=$1"
+      sensible-browser "http://localhost:8888/#coreAPIPassword=$password"
     elif [[ $(uname) == 'Darwin' ]]; then
       docker run -d --name $browsercontainer-static -p 8888:8888 $browserimage blockstack-browser
       docker run -d --name $browsercontainer-cors  -e CORSPROXY_HOST="0.0.0.0" -p 1337:1337 $browserimage blockstack-cors-proxy
-      open "http://localhost:8888/#coreAPIPassword=$1"
+      open "http://localhost:8888/#coreAPIPassword=$password"
     elif [[ $(uname) == 'Windows' || $(uname) == 'MINGW64_NT-10.0' ]]; then
       docker run -d --name $browsercontainer-static -p 8888:8888 $browserimage blockstack-browser
       docker run -d --name $browsercontainer-cors  -e CORSPROXY_HOST="0.0.0.0" -p 1337:1337 $browserimage blockstack-cors-proxy
@@ -128,6 +152,31 @@ blockstack docker launcher commands:
   logs -> access the logs from the blockstack browser server
   enter -> exec into the running docker container
 EOF
+}
+
+prompt-new-password () {
+  cat <<EOF
+
+
+Please enter a password to protect your Blockstack core node.
+IMPORTANT: This will be used to encrypt information stored within the containers
+           which may include private keys for your Blockstack wallet.
+           It is important that you remember this password.
+           This will be the password you use to "pair" your Blockstack Browser
+           with your Blockstack core node.
+
+EOF
+  echo -n "Password: " ; read -s password ; echo
+  echo -n "Repeat: " ; read -s password_repeated ; echo
+  while [ ! $password == $password_repeated ] ; do
+      echo "Passwords do not match, please try again."
+      echo -n "Password: " ; read -s password ; echo
+      echo -n "Repeat: " ; read -s password_repeated ; echo
+  done
+}
+
+prompt-password () {
+  echo "Enter your Blockstack Core password: " ; read -s password; echo
 }
 
 case $1 in

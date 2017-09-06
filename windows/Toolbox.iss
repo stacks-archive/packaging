@@ -66,6 +66,7 @@ Name: "Git"; Description: "Git for Windows"; Types: full custom; Flags: disablen
 Source: ".\blockstack.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#dockerCli}"; DestDir: "{app}"; Flags: ignoreversion; Components: "Docker"
 Source: ".\start.sh"; DestDir: "{app}"; Flags: ignoreversion; Components: "Docker"
+Source: ".\docker_shell.sh"; DestDir: "{app}"; Flags: ignoreversion; Components: "BlockstackDocker"
 Source: ".\launcher"; DestDir: "{app}"; Flags: ignoreversion; Components: "BlockstackDocker"
 Source: "{#dockerMachineCli}"; DestDir: "{app}"; Flags: ignoreversion; Components: "DockerMachine"
 Source: "{#dockerComposeCli}"; DestDir: "{app}"; Flags: ignoreversion; Components: "DockerCompose"
@@ -75,8 +76,9 @@ Source: "{#virtualBoxCommon}"; DestDir: "{app}\installers\virtualbox"; Component
 Source: "{#virtualBoxMsi}"; DestDir: "{app}\installers\virtualbox"; DestName: "virtualbox.msi"; AfterInstall: RunInstallVirtualBox(); Components: "VirtualBox"
 
 [Icons]
-Name: "{userprograms}\Blockstack\Blockstack Browser"; WorkingDir: "{app}"; Filename: "{pf64}\Git\bin\bash.exe"; Parameters: "--login -i ""{app}\start.sh"""; IconFilename: "{app}/blockstack.ico"; Components: "Docker"
-Name: "{commondesktop}\Blockstack Browser"; WorkingDir: "{app}"; Filename: "{pf64}\Git\bin\bash.exe"; Parameters: "--login -i ""{app}\start.sh"""; IconFilename: "{app}/blockstack.ico"; Tasks: desktopicon; Components: "Docker"
+Name: "{userprograms}\Blockstack\Blockstack Browser"; WorkingDir: "{app}"; Filename: "{pf64}\Git\bin\bash.exe"; Parameters: "--login -i ""{app}\start.sh"""; IconFilename: "{app}/blockstack.ico"; Components: "BlockstackDocker"
+Name: "{userprograms}\Blockstack\Blockstack Browser"; WorkingDir: "{app}"; Filename: "{pf64}\Git\bin\bash.exe"; Parameters: "--login -i ""{app}\docker_shell.sh"""; IconFilename: "{app}/blockstack.ico"; Components: "BlockstackDocker"
+Name: "{commondesktop}\Blockstack Browser"; WorkingDir: "{app}"; Filename: "{pf64}\Git\bin\bash.exe"; Parameters: "--login -i ""{app}\start.sh"""; IconFilename: "{app}/blockstack.ico"; Tasks: desktopicon; Components: "BlockstackDocker"
 
 [UninstallRun]
 Filename: "{app}\docker-machine.exe"; Parameters: "rm -f default"

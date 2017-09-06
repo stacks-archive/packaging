@@ -102,17 +102,4 @@ docker () {
 }
 export -f docker
 
-docker pull ${CORE_CONTAINER_REPO}:latest
-docker pull ${BROWSER_CONTAINER_REPO}:latest
-
-launcher start
-
-trap "launcher stop ; echo 'Closing'" SIGINT SIGTERM
-trap "launcher stop ; echo 'Closing'" EXIT
-
-echo "Blockstack is running. Hit Ctrl-C to Exit."
-
-while :
-do
-  sleep 60
-done
+exec "$BASH" --login -i

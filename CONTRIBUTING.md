@@ -1,3 +1,9 @@
+Contributing to Blockstack + Docker Toolbox Installer
+=====================================================
+
+Additional code for supporting Blockstack container installation in this
+installer is part of the [Blockstack](https://blockstack.org) project.
+
 Contributing to  Docker Toolbox
 ==================================
 

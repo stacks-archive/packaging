@@ -1,5 +1,7 @@
 ## License
 
+Blockstack for Docker Installation code is copyright Blockstack Inc, 2017, and is licensed under the Apache License, Version 2.0.  See [LICENSE](https://github.com/docker/toolbox/blob/master/LICENSE/LICENSE) for the full license text.
+
 Docker Toolbox code is licensed under the Apache License, Version 2.0. See [LICENSE](https://github.com/docker/toolbox/blob/master/LICENSE/LICENSE) for the full license text.
 
 Docker Toolbox Logo and all other related Docker artwork © Docker, Inc. 2015.  All rights reserved; not licensed for third party use.
