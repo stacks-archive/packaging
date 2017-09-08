@@ -67,6 +67,7 @@ Source: ".\blockstack.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#dockerCli}"; DestDir: "{app}"; Flags: ignoreversion; Components: "Docker"
 Source: ".\start.sh"; DestDir: "{app}"; Flags: ignoreversion; Components: "Docker"
 Source: ".\docker_shell.sh"; DestDir: "{app}"; Flags: ignoreversion; Components: "BlockstackDocker"
+Source: ".\blockstack.bat"; DestDir: "{app}"; Flags: ignoreversion; Components: "BlockstackDocker"
 Source: ".\launcher"; DestDir: "{app}"; Flags: ignoreversion; Components: "BlockstackDocker"
 Source: "{#dockerMachineCli}"; DestDir: "{app}"; Flags: ignoreversion; Components: "DockerMachine"
 Source: "{#dockerComposeCli}"; DestDir: "{app}"; Flags: ignoreversion; Components: "DockerCompose"
@@ -77,7 +78,7 @@ Source: "{#virtualBoxMsi}"; DestDir: "{app}\installers\virtualbox"; DestName: "v
 
 [Icons]
 Name: "{userprograms}\Blockstack\Blockstack Browser"; WorkingDir: "{app}"; Filename: "{pf64}\Git\bin\bash.exe"; Parameters: "--login -i ""{app}\start.sh"""; IconFilename: "{app}/blockstack.ico"; Components: "BlockstackDocker"
-Name: "{userprograms}\Blockstack\Blockstack Browser"; WorkingDir: "{app}"; Filename: "{pf64}\Git\bin\bash.exe"; Parameters: "--login -i ""{app}\docker_shell.sh"""; IconFilename: "{app}/blockstack.ico"; Components: "BlockstackDocker"
+Name: "{userprograms}\Blockstack\Blockstack Docker Shell"; WorkingDir: "{app}"; Filename: "{pf64}\Git\bin\bash.exe"; Parameters: "--login -i ""{app}\docker_shell.sh"""; IconFilename: "{app}/blockstack.ico"; Components: "BlockstackDocker"
 Name: "{commondesktop}\Blockstack Browser"; WorkingDir: "{app}"; Filename: "{pf64}\Git\bin\bash.exe"; Parameters: "--login -i ""{app}\start.sh"""; IconFilename: "{app}/blockstack.ico"; Tasks: desktopicon; Components: "BlockstackDocker"
 
 [UninstallRun]
@@ -85,6 +86,10 @@ Filename: "{app}\docker-machine.exe"; Parameters: "rm -f default"
 
 [Registry]
 Root: HKCU; Subkey: "Environment"; ValueType:string; ValueName:"DOCKER_TOOLBOX_INSTALL_PATH"; ValueData:"{app}" ; Flags: preservestringtype uninsdeletevalue;
+Root: HKCR; Subkey: "blockstack"; ValueType:string; ValueName:""; ValueData:"URL:Blockstack Browser"; Flags: uninsdeletevalue;
+Root: HKCR; Subkey: "blockstack"; ValueType:string; ValueName:"URL Protocol"; ValueData:""; Flags: uninsdeletevalue;
+Root: HKCR; Subkey: "blockstack\DefaultIcon"; ValueType:string; ValueName:""; ValueData:"{app}\blockstack.ico,1"; Flags: uninsdeletevalue;
+Root: HKCR; Subkey: "blockstack\shell\open\command"; ValueType:string; ValueName:""; ValueData:"""{app}\blockstack.bat"" ""%1""" ; Flags: uninsdeletevalue;
 
 [Code]
 #include "base64.iss"
