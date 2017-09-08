@@ -3,7 +3,7 @@ Blockstack Toolbox
 
 The Blockstack Docker Toolbox installs everything you need to get started with
 Blockstack, using Docker on Windows. It includes the Docker client, Compose,
-Machine, Kitematic, and VirtualBox.
+Machine, and VirtualBox.
 
 ## Installation and documentation
 
