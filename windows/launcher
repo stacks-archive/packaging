@@ -12,10 +12,13 @@ corecontainer=blockstack-api
 # Name of Blockstack Browser container
 browsercontainer=blockstack-browser
 
-tmpdir=$HOME/.blockstack_tmp
+tmpdir=/tmp/.blockstack_tmp
+
+if [ ! -e $tmpdir ]; then
+   mkdir -p $tmpdir
+fi
 
 password=0
-DEBUG=0
 
 build () {
   echo "Building blockstack docker image. This might take a minute..."
@@ -66,7 +69,7 @@ start () {
       fi
     fi
 
-    if [ $DEBUG == "1" ]; then
+    if [ "$BLOCKSTACK_DEBUG" == "1" ]; then
         runcommand="bash"
     else
         runcommand="blockstack api start-foreground --password $password --api_password $password"
@@ -81,7 +84,8 @@ start () {
       docker run -dt --name $corecontainer -v "$tmpdir":/tmp -v "$homedir":$containerdir -p 6270:6270 $coreimage $runcommand
     fi
 
-    if [ $DEBUG == "1" ]; then
+    if [ "$BLOCKSTACK_DEBUG" == "1" ]; then
+        docker exec -t $corecontainer apt-get install lsof
         docker exec -t $corecontainer blockstack api start --debug --password $password --api_password $password
     fi
   fi
