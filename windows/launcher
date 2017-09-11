@@ -11,14 +11,14 @@ containerdir=/root/.blockstack
 corecontainer=blockstack-api
 # Name of Blockstack Browser container
 browsercontainer=blockstack-browser
-
+# Local temporary directory
 tmpdir=/tmp/.blockstack_tmp
-
 if [ ! -e $tmpdir ]; then
    mkdir -p $tmpdir
 fi
-
+# set password blank so we know when to prompt
 password=0
+
 
 build () {
   echo "Building blockstack docker image. This might take a minute..."
@@ -37,12 +37,13 @@ create-wallet () {
   docker run -it -v "$homedir":$containerdir $coreimage sed -i 's/api_endpoint_host = localhost/api_endpoint_host = 0.0.0.0/' $containerdir/client.ini
 }
 
-start () {
+start-containers () {
   # Check for args first
   if [ $# -ne 0 ]; then
       password=$1
   fi
 
+  # let's see if we should create a new wallet
   if [ ! -e "$homedir/wallet.json" ]; then
     if [ $password == "0" ]; then
       prompt-new-password
@@ -51,6 +52,7 @@ start () {
     create-wallet $password
   fi
 
+  # otherwise, prompt for an OLD password
   if [ $password == "0" ]; then
       prompt-password
   fi
@@ -64,15 +66,12 @@ start () {
       # cleanup old container if its still around
       echo "removing old blockstack-core container..."
       docker rm $corecontainer
-      if [[ -e "$tmpdir" ]]; then
-         rm -rf "$tmpdir"
-      fi
     fi
 
     if [ "$BLOCKSTACK_DEBUG" == "1" ]; then
-        runcommand="bash"
+      runcommand="bash"
     else
-        runcommand="blockstack api start-foreground --password $password --api_password $password"
+      runcommand="blockstack api start-foreground --password $password --api_password $password"
     fi
 
     # If there is no existing $corecontainer container, run one
@@ -85,8 +84,8 @@ start () {
     fi
 
     if [ "$BLOCKSTACK_DEBUG" == "1" ]; then
-        docker exec -t $corecontainer apt-get install lsof
-        docker exec -t $corecontainer blockstack api start --debug --password $password --api_password $password
+      docker exec -t $corecontainer apt-get install lsof
+      docker exec -t $corecontainer blockstack api start --debug --password $password --api_password $password
     fi
   fi
 
@@ -102,17 +101,15 @@ start () {
     fi
 
     # If there are no existing blockstack-browser-* containers, run them
+    docker run -d --name $browsercontainer-static -p 8888:8888 $browserimage blockstack-browser
+    docker run -d --name $browsercontainer-cors  -e CORSPROXY_HOST="0.0.0.0" -p 1337:1337 $browserimage blockstack-cors-proxy
+
     if [[ $(uname) == 'Linux' ]]; then
-      docker run -d --name $browsercontainer-static -p 8888:8888 $browserimage blockstack-browser
-      docker run -d --name $browsercontainer-cors  -e CORSPROXY_HOST="0.0.0.0" -p 1337:1337 $browserimage blockstack-cors-proxy
       sensible-browser "http://localhost:8888/#coreAPIPassword=$password"
     elif [[ $(uname) == 'Darwin' ]]; then
-      docker run -d --name $browsercontainer-static -p 8888:8888 $browserimage blockstack-browser
-      docker run -d --name $browsercontainer-cors  -e CORSPROXY_HOST="0.0.0.0" -p 1337:1337 $browserimage blockstack-cors-proxy
       open "http://localhost:8888/#coreAPIPassword=$password"
     elif [[ $(uname) == 'Windows' || $(uname) == 'MINGW64_NT-10.0' ]]; then
-      docker run -d --name $browsercontainer-static -p 8888:8888 $browserimage blockstack-browser
-      docker run -d --name $browsercontainer-cors  -e CORSPROXY_HOST="0.0.0.0" -p 1337:1337 $browserimage blockstack-cors-proxy
+      start "http://localhost:8888/#coreAPIPassword=$password"
     fi
   fi
 }
@@ -191,7 +188,7 @@ case $1 in
     create-wallet $2
     ;;
   start)
-    start $2
+    start-containers $2
     ;;
   logs)
     logs
