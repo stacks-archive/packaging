@@ -6,6 +6,8 @@ DEBS_SRC := $(ROOT_DIR)/debs/
 
 DEBS_REPO_OUT := $(BUILD)/repositories/debian
 
+WINDOWS_OUT := $(ROOT_DIR)/blockstack-toolbox-windows/dist/BlockstackToolbox.exe
+
 RELEASE ?= stable
 DEBIAN_RELEASE ?= xenial 
 
@@ -14,6 +16,7 @@ BUILD_PKG=$(BUILD)/pkg
 
 DEPLOY_DEBS_SCRIPT=./deploy-debs.sh
 DEPLOY_PYPI_SCRIPT=./deploy-pypi.sh
+DEPLOY_WINDOWS_SCRIPT=./deploy-windows.sh
 
 BREW_SCRIPT=./build-brew.sh
 BREW_IN=./brew/blockstack.rb.in
@@ -54,6 +57,9 @@ deploy: deploy-debs
 
 deploy-debs:
 	$(SHELL) -x $(DEPLOY_DEBS_SCRIPT) "$(DEBS_REPO_OUT)"
+
+deploy-windows:
+	$(SHELL) -x $(DEPLOY_WINDOWS_SCRIPT) "$(WINDOWS_OUT)"
 
 deploy-pypi: $(BUILD) repos metadata
 	$(SHELL) -x $(DEPLOY_PYPI_SCRIPT) "$(BUILD_SRC)" "$(BUILD_PKG)" "$(PYPI_SECRETS)"

@@ -5,6 +5,23 @@ This repository contains the necessary scripts and tools to create signed Linux 
 
 To use these scripts, you will need [fpm](https://github.com/jordansissel/fpm) and a GPG key.
 
+Building Windows Installer
+--------------------------
+
+```bash
+$ cd blockstack-toolbox-windows/
+$ make windows
+```
+
+This requires Docker to build.
+It produces `blockstack-toolbox-windows/dist/BlockstackToolbox.exe`
+
+This can be deployed with
+
+```bash
+$ make deploy-windows
+```
+
 Example
 -------
 
