@@ -5,6 +5,8 @@ The CLI will pull down the images from our [Quay image repository](https://quay.
 
 You can download the launcher script from our packaging repo: [download](https://raw.githubusercontent.com/blockstack/packaging/master/browser-core-docker/launcher)
 
+In order to use this script, you must have docker installed and setup on your machine. Our Windows [installer](http://packages.blockstack.com/repositories/windows/) sets up docker for you and uses this script to start Blockstack Browser automatically (the first time it runs, you will need to enter a password).
+
 ```bash
 # First run the pull command. This will fetch the latest docker images from our image repository.
 $ ./launcher pull
