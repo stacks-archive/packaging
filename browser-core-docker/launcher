@@ -104,6 +104,8 @@ start-containers () {
     docker run -d --name $browsercontainer-cors  -e CORSPROXY_HOST="0.0.0.0" -p 1337:1337 $browserimage blockstack-cors-proxy
 
     if [[ $(uname) == 'Linux' ]]; then
+      # let's register the protocol handler if it isn't already registered:
+      create-linux-protocol-handler
       sensible-browser "http://localhost:8888/#coreAPIPassword=$password"
     elif [[ $(uname) == 'Darwin' ]]; then
       open "http://localhost:8888/#coreAPIPassword=$password"
@@ -184,7 +186,30 @@ pull () {
     docker pull ${browserimage}
 }
 
+create-linux-protocol-handler () {
+    HANDLER="blockstack.desktop"
+    if [ ! -e "$HOME/.local/share/applications/$HANDLER" ]; then
+       echo "Registering protocol handler"
+       if [ ! -e "$HOME/.local/share/applications/" ]; then
+          mkdir -p "$HOME/.local/share/applications/"
+       fi
+       cat - > "$HOME/.local/share/applications/$HANDLER" <<EOF
+[Desktop Entry]
+Type=Application
+Terminal=false
+Exec=bash -c 'xdg-open http://localhost:8888/auth?authRequest=\$(echo "%u" | sed s/blockstack://)'
+Name=Blockstack-Browser
+MimeType=x-scheme-handler/blockstack;
+EOF
+       chmod +x "$HOME/.local/share/applications/$HANDLER"
+       xdg-mime default "$HANDLER" x-scheme-handler/blockstack
+    fi
+}
+
 case $1 in
+  create-linux-protocol-handler)
+    create-linux-protocol-handler
+    ;;
   stop)
     stop
     ;;
