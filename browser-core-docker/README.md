@@ -16,6 +16,10 @@ $ ./launcher pull
 # Next you can start the Blockstack Core API
 $ ./launcher start
 
+# On Linux, this ./launcher start will also install a protocol handler using xdg-mime
+# (the protocol handler is installed on Windows by the installer exe and on macOS through
+#  the macOS dock application)
+
 # When you are done you can clean up your environment by running
 $ ./launcher stop
 ```
