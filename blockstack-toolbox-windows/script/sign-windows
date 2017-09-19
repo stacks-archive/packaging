@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# requires secrets --> key.pem + cert.pem
+
+openssl rsa -in secrets/key.pem -outform DER -out secrets/signer.key
+openssl crl2pkcs7 -nocrl -certfile secrets/cert.pem -outform DER -out secrets/cert.spc
+osslsigncode -spc secrets/cert.spc -key secrets/signer.key -t http://timestamp.verisign.com/scripts/timstamp.dll -in dist/BlockstackToolbox.exe -out dist/BlockstackToolboxSigned.exe
+
+rm secrets/signer.key
+rm secrets/cert.spc

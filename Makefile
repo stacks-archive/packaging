@@ -53,7 +53,10 @@ debian-repository: debs
 
 .PHONY: deploy deploy-debs deploy-pypi
 
-deploy: deploy-debs 
+windows:
+	cd blockstack-toolbox-windows; script/build-windows "$(BSK_BUILD_TAG)"
+
+deploy: deploy-debs
 
 deploy-debs:
 	$(SHELL) -x $(DEPLOY_DEBS_SCRIPT) "$(DEBS_REPO_OUT)"

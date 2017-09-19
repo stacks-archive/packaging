@@ -5,6 +5,14 @@ set -e
 # should execute from packaging/blockstack-toolbox-windows
 cp ../browser-core-docker/launcher ./windows/
 
+# check if we got an arg to set the release tag
+if [ "$1" != "" ]; then
+    TAG=$1
+    sed -i "s/TAG=latest/TAG=${TAG}/" ./windows/launcher
+else
+    TAG="latest"
+fi
+
 . versions
 docker build \
 	-t windows-installer \

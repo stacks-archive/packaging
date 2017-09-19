@@ -20,3 +20,4 @@ dist
 
 # release
 .sign
+secrets

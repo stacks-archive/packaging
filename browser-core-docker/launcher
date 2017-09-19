@@ -1,8 +1,12 @@
 #!/bin/bash
 
 # This script provides a simple interface for folks to use the docker install
-coreimage=quay.io/blockstack/blockstack-core:latest
-browserimage=quay.io/blockstack/blockstack-browser:latest
+
+TAG=latest
+
+coreimage=quay.io/blockstack/blockstack-core:$TAG
+browserimage=quay.io/blockstack/blockstack-browser:$TAG
+
 # Local Blockstack directory
 homedir=$HOME/.blockstack
 # Blockstack Directory inside container
