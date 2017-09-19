@@ -102,8 +102,7 @@ docker () {
 }
 export -f docker
 
-docker pull ${CORE_CONTAINER_REPO}:latest
-docker pull ${BROWSER_CONTAINER_REPO}:latest
+launcher pull
 
 launcher start
 
