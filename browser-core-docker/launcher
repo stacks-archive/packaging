@@ -167,6 +167,9 @@ IMPORTANT: This will be used to encrypt information stored within the containers
            This will be the password you use to "pair" your Blockstack Browser
            with your Blockstack core node.
 
+           Legal characters:
+               letters (upper and lowercase), numbers, '_', and '-'
+
 EOF
   echo -n "Password: " ; read -s password ; echo
   echo -n "Repeat: " ; read -s password_repeated ; echo
