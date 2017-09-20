@@ -6,14 +6,20 @@ set -e
 cp ../browser-core-docker/launcher ./windows/
 
 # check if we got an arg to set the release tag
-if [ "$1" != "" ]; then
-    TAG=$1
-    sed -i "s/TAG=latest/TAG=${TAG}/" ./windows/launcher
-else
-    TAG="latest"
-fi
+TAG="latest"
+
+push=false
 
 . versions
+
+if [ -f secrets ]; then
+    echo "Secrets file found, attempting to push to Azure blob storage"
+    TAG=$(git rev-parse --abbrev-ref HEAD)
+    sed -i "s/TAG=latest/TAG=${TAG}/" ./windows/launcher
+    . secrets
+    push=true
+fi
+
 docker build \
 	-t windows-installer \
 	-f Dockerfile.windows \
@@ -27,7 +33,15 @@ docker build \
 	--build-arg VBOX_REV="${VBOX_REV}" \
 	--build-arg MIXPANEL_TOKEN="${MIXPANEL_TOKEN}" \
 	.
-CONTAINER="$(docker run -d windows-installer)"
+
+CONTAINER="$(docker run -d --rm windows-installer)"
 mkdir -p dist
 docker cp "${CONTAINER}":/installer/Output/BlockstackToolbox.exe dist/
 docker rm "${CONTAINER}" 2>/dev/null || true
+
+if [ "$push" == "true" ]; then
+  echo "Pushing to azure.."
+  az storage blob upload --file ./dist/BlockstackToolbox.exe -c packaging --name windows-installer-$TAG --connection-string $azureConnectionString
+fi
+
+rm -rf dist

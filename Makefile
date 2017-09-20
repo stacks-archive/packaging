@@ -9,7 +9,7 @@ DEBS_REPO_OUT := $(BUILD)/repositories/debian
 WINDOWS_OUT := $(ROOT_DIR)/blockstack-toolbox-windows/dist/BlockstackToolbox.exe
 
 RELEASE ?= stable
-DEBIAN_RELEASE ?= xenial 
+DEBIAN_RELEASE ?= xenial
 
 BUILD_SRC=$(BUILD)/src
 BUILD_PKG=$(BUILD)/pkg
@@ -30,7 +30,7 @@ GPGKEYID ?= DB858875
 PYPI_SECRETS ?= $(ROOT_DIR)/pypi-secrets/
 
 .PHONY: all
-all: debian-repository 
+all: debian-repository
 
 $(BUILD):
 	@mkdir -p "$(BUILD)"
@@ -54,7 +54,7 @@ debian-repository: debs
 .PHONY: deploy deploy-debs deploy-pypi
 
 windows:
-	cd blockstack-toolbox-windows; script/build-windows "$(BSK_BUILD_TAG)"
+	cd blockstack-toolbox-windows; script/build-windows
 
 deploy: deploy-debs
 
