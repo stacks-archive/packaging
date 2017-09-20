@@ -15,7 +15,7 @@ push=false
 if [ -f secrets ]; then
     echo "Secrets file found, attempting to push to Azure blob storage"
     TAG=$(git rev-parse --abbrev-ref HEAD)
-    sed -i "s/TAG=latest/TAG=${TAG}/" ./windows/launcher
+    sed -ie "s/TAG=latest/TAG=${TAG}/" ./windows/launcher
     . secrets
     push=true
 fi
