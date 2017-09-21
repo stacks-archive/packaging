@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -e
+
+if [ -e dist/linux-launcher ]; then
+   rm -rf dist/linux-launcher/
+fi
+
+mkdir -p dist/linux-launcher/
+
+cp ./browser-core-docker/launcher ./dist/linux-launcher/launcher
+
+# check if we got an arg to set the release tag
+TAG="latest"
+
+push=false
+
+if [ -f azure_secrets ]; then
+    echo "Secrets file found, attempting to push to Azure blob storage"
+    TAG=$(git symbolic-ref -q --short HEAD || git describe --tags --exact-match)
+    sed -ie "s/TAG=latest/TAG=${TAG}/" ./dist/linux-launcher/launcher
+    . azure_secrets
+    push=true
+fi
+
+if [ "$push" == "true" ]; then
+  echo "Pushing to azure.."
+  az storage blob upload --file ./dist/linux-launcher/launcher -c packaging --name blockstack-launcher-$TAG --connection-string $azureConnectionString
+fi

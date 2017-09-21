@@ -56,6 +56,9 @@ debian-repository: debs
 windows:
 	cd blockstack-toolbox-windows; script/build-windows
 
+linux-launcher:
+	./distribute-linux-launcher
+
 deploy: deploy-debs
 
 deploy-debs:

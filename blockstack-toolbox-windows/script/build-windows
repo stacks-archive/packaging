@@ -34,7 +34,7 @@ docker build \
 	--build-arg MIXPANEL_TOKEN="${MIXPANEL_TOKEN}" \
 	.
 
-CONTAINER="$(docker run -d --rm windows-installer)"
+CONTAINER="$(docker run -d windows-installer)"
 mkdir -p dist
 docker cp "${CONTAINER}":/installer/Output/BlockstackToolbox.exe dist/
 docker rm "${CONTAINER}" 2>/dev/null || true
