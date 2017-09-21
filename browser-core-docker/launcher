@@ -4,6 +4,8 @@
 
 TAG=latest
 
+CORETAG="$TAG-browser"
+
 coreimage=quay.io/blockstack/blockstack-core:$TAG
 browserimage=quay.io/blockstack/blockstack-browser:$TAG
 
