@@ -6,7 +6,7 @@ TAG=latest
 
 CORETAG="$TAG-browser"
 
-coreimage=quay.io/blockstack/blockstack-core:$TAG
+coreimage=quay.io/blockstack/blockstack-core:$CORETAG
 browserimage=quay.io/blockstack/blockstack-browser:$TAG
 
 # Local Blockstack directory

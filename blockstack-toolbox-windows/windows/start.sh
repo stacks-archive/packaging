@@ -74,6 +74,21 @@ if [ "${VM_STATUS}" != "Running" ]; then
   yes | "${DOCKER_MACHINE}" regenerate-certs "${VM}"
 fi
 
+STEP="Checking if networking setup"
+"${VBOXMANAGE}" showvminfo "${VM}" | grep NIC | grep -q "name = core"
+if [ $? -eq 1 ]; then
+  "${VBOXMANAGE}" controlvm "${VM}" natpf1 core,tcp,localhost,6270,localhost,6270
+fi
+"${VBOXMANAGE}" showvminfo "${VM}" | grep NIC | grep -q "name = cors"
+if [ $? -eq 1 ]; then
+  "${VBOXMANAGE}" controlvm "${VM}" natpf1 cors,tcp,localhost,1337,localhost,1337
+fi
+"${VBOXMANAGE}" showvminfo "${VM}" | grep NIC | grep -q "name = browser"
+if [ $? -eq 1 ]; then
+  "${VBOXMANAGE}" controlvm "${VM}" natpf1 browser,tcp,localhost,8888,localhost,8888
+fi
+
+
 STEP="Setting env"
 eval "$(${DOCKER_MACHINE} env --shell=bash --no-proxy ${VM})"
 

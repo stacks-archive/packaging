@@ -15,7 +15,7 @@ push=false
 if [ -f secrets ]; then
     echo "Secrets file found, attempting to push to Azure blob storage"
     TAG=$(git symbolic-ref -q --short HEAD || git describe --tags --exact-match)
-    sed -ie "s/TAG=latest/TAG=${TAG}/" ./windows/launcher
+    sed -i -e "s/TAG=latest/TAG=${TAG}/" ./windows/launcher
     . secrets
     push=true
 fi
@@ -41,7 +41,5 @@ docker rm "${CONTAINER}" 2>/dev/null || true
 
 if [ "$push" == "true" ]; then
   echo "Pushing to azure.."
-  az storage blob upload --file ./dist/BlockstackToolbox.exe -c packaging --name windows-installer-$TAG --connection-string $azureConnectionString
+  az storage blob upload --file ./dist/BlockstackToolbox.exe -c packaging --name windows-installer-$TAG.exe --connection-string $azureConnectionString
 fi
-
-rm -rf dist
