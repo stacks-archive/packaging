@@ -6,7 +6,7 @@ set -e
 cp ../browser-core-docker/launcher ./windows/
 
 # check if we got an arg to set the release tag
-TAG="latest"
+# TAG="latest"
 
 push=false
 
@@ -14,7 +14,11 @@ push=false
 
 if [ -f secrets ]; then
     echo "Secrets file found, attempting to push to Azure blob storage"
-    TAG=$(git symbolic-ref -q --short HEAD || git describe --tags --exact-match)
+    if [ "$BUILD_TAG" ]; then
+        TAG="$BUILD_TAG"
+    else
+        TAG=$(git symbolic-ref -q --short HEAD || git describe --tags --exact-match)
+    fi
     sed -i -e "s/TAG=latest/TAG=${TAG}/" ./windows/launcher
     . secrets
     push=true
@@ -41,5 +45,7 @@ docker rm "${CONTAINER}" 2>/dev/null || true
 
 if [ "$push" == "true" ]; then
   echo "Pushing to azure.."
-  az storage blob upload --file ./dist/BlockstackToolbox.exe -c packaging --name windows-installer-$TAG.exe --connection-string $azureConnectionString
+  OUTNAME=windows-installer-$TAG.exe
+  az storage blob upload --file ./dist/BlockstackToolbox.exe -c packaging --name $OUTNAME --connection-string $azureConnectionString
+  az storage blob url -c packaging -n $OUTNAME --connection-string $azureConnectionString
 fi
