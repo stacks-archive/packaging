@@ -13,6 +13,7 @@ PKGS_DIR="$3"
 PACKAGING_DIR="."
 
 BUILD_PYTHON="./build-python.sh"
+SKIP_FILE="./repo-skip.txt"
 
 set -u
 
@@ -33,6 +34,12 @@ while IFS= read PACKAGE; do
    RC=
    SRC_DIR="$REPO_DIR/$PACKAGE"
    PKG_DIR="$PKGMD_DIR/$PACKAGE"
+
+   if [ -f "$SKIP_FILE" ]; then 
+      if [ -n "$(fgrep "$PACKAGE" "$SKIP_FILE")" ]; then 
+         continue
+      fi
+   fi
 
    if ! [ -d "$REPO_DIR" ]; then 
       echo >&2 "FATAL: source directory not found: $SRC_DIR"

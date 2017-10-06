@@ -49,19 +49,19 @@ done
 if [ -f "$REPO_DIR/package.json" ]; then
     for MD in "license" "version" "name" "description"; do
 
-	if [ -f "$PKG_METADATA/$PKG_NAME/$MD.txt" ]; then 
-	    cp "$PKG_METADATA/$PKG_NAME/$MD.txt" "$PKG_DIR/$MD.txt"
-	else
-	    pushd "$REPO_DIR" >/dev/null
-	    DAT="$(cat ./package.json | jq .$MD)"
-	    popd >/dev/null
+       if [ -f "$PKG_METADATA/$PKG_NAME/$MD.txt" ]; then 
+           cp "$PKG_METADATA/$PKG_NAME/$MD.txt" "$PKG_DIR/$MD.txt"
+       else
+           pushd "$REPO_DIR" >/dev/null
+           DAT="$(cat ./package.json | jq .$MD)"
+           popd >/dev/null
 
-	    if [ "$DAT" = "UNKNOWN" ]; then 
-		echo >&2 "FATAL: unknown $MD must be overridden (Hint: put it in $PKG_METADATA/$PKG_NAME/$MD.txt)"
-		exit 1
-	    fi
-	    echo "$DAT" | sed -e 's/"$//' -e 's/^"//' > "$PKG_DIR/$MD.txt"
-	fi
+           if [ "$DAT" = "UNKNOWN" ]; then 
+           echo >&2 "FATAL: unknown $MD must be overridden (Hint: put it in $PKG_METADATA/$PKG_NAME/$MD.txt)"
+           exit 1
+           fi
+           echo "$DAT" | sed -e 's/"$//' -e 's/^"//' > "$PKG_DIR/$MD.txt"
+       fi
     done
     pushd "$REPO_DIR" >/dev/null
     DAT="$(cat ./package.json | jq .repository.url | head -n 1)"

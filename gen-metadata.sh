@@ -8,6 +8,7 @@
 REPO_DIR="$1"
 PKGMD_DIR="$2"
 GEN_REPO_METADATA="./gen-repo-metadata.sh"
+SKIP_FILE="./repo-skip.txt"
 
 set -u
 
@@ -30,6 +31,12 @@ fi
 
 REPO=
 while IFS= read REPO; do
+   
+   if [ -f "$SKIP_FILE" ]; then 
+       if [ -n "$(fgrep "$REPO" "$SKIP_FILE")" ]; then 
+          continue
+       fi
+   fi
 
    echo "Generate package metadata for $REPO..."
    "$GEN_REPO_METADATA" "$REPO_DIR/$REPO" "$PKGMD_DIR/$REPO"

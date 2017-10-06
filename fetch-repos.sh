@@ -13,6 +13,7 @@ MD_DIR="$1"
 REPO_DIR="$2"
 RELEASE="$3"
 IMPORTED="./imported"
+SKIP_FILE="./repo-skip.txt"
 
 set -u 
 
@@ -27,6 +28,12 @@ while IFS= read PKG_MD_DIR; do
 
    REPO_MD_FILE="$MD_DIR/$PKG_MD_DIR/repo.txt"
    REPO_NAME="$PKG_MD_DIR"
+
+   if [ -f "$SKIP_FILE" ]; then 
+      if [ -n "$(fgrep "$REPO_NAME" "$SKIP_FILE")" ]; then 
+         continue
+      fi
+   fi
 
    if ! [ -f "$REPO_MD_FILE" ]; then
       # should be imported 
