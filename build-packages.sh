@@ -36,7 +36,7 @@ while IFS= read PACKAGE; do
    PKG_DIR="$PKGMD_DIR/$PACKAGE"
 
    if [ -f "$SKIP_FILE" ]; then 
-      if [ -n "$(fgrep "$PACKAGE" "$SKIP_FILE")" ]; then 
+      if [ -n "$(egrep "^${PACKAGE}$" "$SKIP_FILE")" ]; then 
          continue
       fi
    fi

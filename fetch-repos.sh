@@ -30,7 +30,7 @@ while IFS= read PKG_MD_DIR; do
    REPO_NAME="$PKG_MD_DIR"
 
    if [ -f "$SKIP_FILE" ]; then 
-      if [ -n "$(fgrep "$REPO_NAME" "$SKIP_FILE")" ]; then 
+      if [ -n "$(egrep "^${REPO_NAME}$" "$SKIP_FILE")" ]; then 
          continue
       fi
    fi

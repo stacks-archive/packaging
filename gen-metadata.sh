@@ -33,7 +33,7 @@ REPO=
 while IFS= read REPO; do
    
    if [ -f "$SKIP_FILE" ]; then 
-       if [ -n "$(fgrep "$REPO" "$SKIP_FILE")" ]; then 
+       if [ -n "$(egrep "^${REPO}$" "$SKIP_FILE")" ]; then 
           continue
        fi
    fi
