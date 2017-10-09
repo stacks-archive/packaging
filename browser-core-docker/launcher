@@ -194,6 +194,10 @@ pull () {
     docker pull ${browserimage}
 }
 
+version () {
+    echo "Blockstack launcher tagged @ '$TAG'"
+}
+
 create-linux-protocol-handler () {
     HANDLER="blockstack.desktop"
     if [ ! -e "$HOME/.local/share/applications/$HANDLER" ]; then
@@ -244,6 +248,9 @@ case $1 in
     ;;
   build)
     build
+    ;;
+  version)
+    version
     ;;
   *)
     commands
