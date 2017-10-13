@@ -3,11 +3,22 @@
 # This script provides a simple interface for folks to use the docker install
 
 TAG=latest
+if [ "$BLOCKSTACK_TAG" ]; then
+   TAG="$BLOCKSTACK_TAG"
+fi
 
 CORETAG="$TAG-browser"
 
 coreimage=quay.io/blockstack/blockstack-core:$CORETAG
 browserimage=quay.io/blockstack/blockstack-browser:$TAG
+
+if [ "$CORE_IMAGE" ]; then
+    coreimage="$CORE_IMAGE"
+fi
+
+if [ "$BROWSER_IMAGE" ]; then
+    browserimage="$BROWSER_IMAGE"
+fi
 
 # Local Blockstack directory
 homedir=$HOME/.blockstack
@@ -73,24 +84,30 @@ start-containers () {
       docker rm $corecontainer
     fi
 
-    if [ "$BLOCKSTACK_DEBUG" == "1" ]; then
-      runcommand="bash"
-    else
-      runcommand="blockstack api start-foreground --password $password --api_password $password"
-    fi
-
     # If there is no existing $corecontainer container, run one
     if [[ $(uname) == 'Linux' ]]; then
-      docker run -dt --name $corecontainer -v "$tmpdir":/tmp -v "$homedir":$containerdir -p 6270:6270 $coreimage $runcommand
+      docker run -dt --name $corecontainer -v "$tmpdir":/tmp -v "$homedir":$containerdir -p 6270:6270 $coreimage bash
     elif [[ $(uname) == 'Darwin' ]]; then
-      docker run -dt --name $corecontainer -v "$tmpdir":/tmp -v "$homedir":$containerdir -p 6270:6270 $coreimage $runcommand
+      docker run -dt --name $corecontainer -v "$tmpdir":/tmp -v "$homedir":$containerdir -p 6270:6270 $coreimage bash
     elif [[ $(uname) == 'Windows' || $(uname) == 'MINGW64_NT-10.0' ]]; then
-      docker run -dt --name $corecontainer -v "$tmpdir":/tmp -v "$homedir":$containerdir -p 6270:6270 $coreimage $runcommand
+      docker run -dt --name $corecontainer -v "$tmpdir":/tmp -v "$homedir":$containerdir -p 6270:6270 $coreimage bash
     fi
 
     if [ "$BLOCKSTACK_DEBUG" == "1" ]; then
-      docker exec -t $corecontainer blockstack api start --debug --password $password --api_password $password
+      runcommand="blockstack api start --debug --password $password --api_password $password"
+    else
+      runcommand="blockstack api start --password $password --api_password $password"
     fi
+
+    docker exec -t $corecontainer $runcommand
+    curl -s http://localhost:6270/v1/ping | grep -q "alive"
+    running=$?
+    if [ $running -ne 0 ]; then
+        echo "Failed to start Blockstack daemon -- is your password correct?"
+        stop
+        exit 1
+    fi
+
   fi
 
   # Check for the blockstack-browser-* containers are running or stopped.

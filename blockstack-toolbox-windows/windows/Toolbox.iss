@@ -58,7 +58,6 @@ Name: vbox_ndis5; Description: "Install VirtualBox with NDIS5 driver[default NDI
 Name: "BlockstackDocker"; Description: "Blockstack Launcher" ; Types: full custom; Flags: fixed
 Name: "Docker"; Description: "Docker Client for Windows" ; Types: full custom; Flags: fixed
 Name: "DockerMachine"; Description: "Docker Machine for Windows" ; Types: full custom; Flags: fixed
-Name: "DockerCompose"; Description: "Docker Compose for Windows" ; Types: full custom
 Name: "VirtualBox"; Description: "VirtualBox"; Types: full custom; Flags: disablenouninstallwarning
 Name: "Git"; Description: "Git for Windows"; Types: full custom; Flags: disablenouninstallwarning
 
@@ -70,7 +69,6 @@ Source: ".\docker_shell.sh"; DestDir: "{app}"; Flags: ignoreversion; Components:
 Source: ".\blockstack.bat"; DestDir: "{app}"; Flags: ignoreversion; Components: "BlockstackDocker"
 Source: ".\launcher"; DestDir: "{app}"; Flags: ignoreversion; Components: "BlockstackDocker"
 Source: "{#dockerMachineCli}"; DestDir: "{app}"; Flags: ignoreversion; Components: "DockerMachine"
-Source: "{#dockerComposeCli}"; DestDir: "{app}"; Flags: ignoreversion; Components: "DockerCompose"
 Source: "{#b2dIsoPath}"; DestDir: "{app}"; Flags: ignoreversion; Components: "DockerMachine"; AfterInstall: CopyBoot2DockerISO()
 Source: "{#git}"; DestDir: "{app}\installers\git"; DestName: "git.exe"; AfterInstall: RunInstallGit();  Components: "Git"
 Source: "{#virtualBoxCommon}"; DestDir: "{app}\installers\virtualbox"; Components: "VirtualBox"
@@ -201,8 +199,8 @@ begin
 
     // Don't do this until we can compare versions
     // Wizardform.ComponentsList.Checked[3] := NeedToInstallVirtualBox();
-    Wizardform.ComponentsList.ItemEnabled[4] := not NeedToInstallVirtualBox();
-    Wizardform.ComponentsList.Checked[5] := NeedToInstallGit();
+    Wizardform.ComponentsList.ItemEnabled[3] := not NeedToInstallVirtualBox();
+    Wizardform.ComponentsList.Checked[4] := NeedToInstallGit();
 end;
 
 function InitializeSetup(): boolean;
