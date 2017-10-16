@@ -20,6 +20,12 @@ if [ "$BROWSER_IMAGE" ]; then
     browserimage="$BROWSER_IMAGE"
 fi
 
+
+# Default to setting blockstack to debug mode
+if [ "$BLOCKSTACK_DEBUG" != "0" ]; then
+    BLOCKSTACK_DEBUG=1
+fi
+
 # Local Blockstack directory
 homedir=$HOME/.blockstack
 # Blockstack Directory inside container

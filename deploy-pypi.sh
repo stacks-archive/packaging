@@ -23,9 +23,8 @@ for PKG_NAME in $(ls "$PKG_BASE"); do
    echo "Uploading $PKG_NAME"
    "$PYPI_UPLOADER" "$PKG_DIR" "$METADATA_DIR" "$PYPI_SECRETS"
 
-   if [ $? -ne 0 ]; then 
+   if [ $? -ne 0 ]; then
       echo "Failed to upload $PKG_NAME to PyPI"
-      exit 1
    fi
 done
 
