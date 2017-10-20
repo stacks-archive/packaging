@@ -2,7 +2,7 @@
 
 # This script provides a simple interface for folks to use the docker install
 
-TAG=v0.18.1
+TAG=latest
 
 CORETAG="$TAG-browser"
 COREVERSION="0.17.0.9"
