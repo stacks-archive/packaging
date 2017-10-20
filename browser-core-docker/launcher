@@ -170,6 +170,7 @@ blockstack docker launcher commands:
   init-core -> fast_sync a blockstack-core node
   start-core -> start a blockstack-core node
   stop-core -> stop a running blockstack-core node
+  pull-core -> pull the blockstack-core image
 EOF
 }
 
@@ -259,6 +260,10 @@ start-core () {
   fi
 }
 
+pull-core () {
+  docker pull ${coreimage}
+}
+
 stop-core () {
   bsd=$(docker ps -a -f name=$blockstackdcontainer -q)
   if [ ! -z "$bsd" ]; then
@@ -311,6 +316,9 @@ case $1 in
     ;;
   stop-core)
     stop-core
+    ;;
+  pull-core)
+    pull-core
     ;;
   *)
     commands
