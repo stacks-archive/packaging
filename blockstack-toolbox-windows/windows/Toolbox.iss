@@ -43,7 +43,6 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Types]
 Name: "full"; Description: "Full installation"
-Name: "custom"; Description: "Custom installation"; Flags: iscustom
 
 [Run]
 Filename: "{win}\explorer.exe"; Parameters: "{userprograms}\Blockstack\"; Flags: postinstall skipifsilent; Description: "View Shortcuts in File Explorer"
@@ -52,20 +51,22 @@ Filename: "{win}\explorer.exe"; Parameters: "{userprograms}\Blockstack\"; Flags:
 Name: desktopicon; Description: "{cm:CreateDesktopIcon}"
 Name: modifypath; Description: "Add Blockstack and Docker binaries to &PATH"
 Name: upgradevm; Description: "Upgrade Boot2Docker VM"
-Name: vbox_ndis5; Description: "Install VirtualBox with NDIS5 driver[default NDIS6]"; Components: VirtualBox; Flags: unchecked
 
 [Components]
-Name: "BlockstackDocker"; Description: "Blockstack Launcher" ; Types: full custom; Flags: fixed
-Name: "Docker"; Description: "Docker Client for Windows" ; Types: full custom; Flags: fixed
-Name: "DockerMachine"; Description: "Docker Machine for Windows" ; Types: full custom; Flags: fixed
-Name: "VirtualBox"; Description: "VirtualBox"; Types: full custom; Flags: disablenouninstallwarning
-Name: "Git"; Description: "Git for Windows"; Types: full custom; Flags: disablenouninstallwarning
+Name: "BlockstackDocker"; Description: "Blockstack Launcher" ; Types: full; Flags: fixed
+Name: "BlockstackD4W"; Description: "Blockstack Docker Scripts" ; Types: full; Flags: fixed
+Name: "Docker"; Description: "Docker Client for Windows" ; Types: full; Flags: fixed
+Name: "DockerMachine"; Description: "Docker Machine for Windows" ; Types: full; Flags: fixed
+Name: "VirtualBox"; Description: "VirtualBox"; Types: full; Flags: disablenouninstallwarning
+Name: "Git"; Description: "Git for Windows"; Types: full; Flags: disablenouninstallwarning
 
 [Files]
 Source: ".\blockstack.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#dockerCli}"; DestDir: "{app}"; Flags: ignoreversion; Components: "Docker"
 Source: ".\start.sh"; DestDir: "{app}"; Flags: ignoreversion; Components: "Docker"
-Source: ".\docker_shell.sh"; DestDir: "{app}"; Flags: ignoreversion; Components: "BlockstackDocker"
+Source: ".\docker_shell.sh"; DestDir: "{app}"; Flags: ignoreversion; Components: "Docker"
+Source: ".\start_d4w.sh"; DestDir: "{app}"; Flags: ignoreversion; Components: "BlockstackD4W"
+Source: ".\docker_shell_d4w.sh"; DestDir: "{app}"; Flags: ignoreversion; Components: "BlockstackD4W"
 Source: ".\blockstack.bat"; DestDir: "{app}"; Flags: ignoreversion; Components: "BlockstackDocker"
 Source: ".\launcher"; DestDir: "{app}"; Flags: ignoreversion; Components: "BlockstackDocker"
 Source: "{#dockerMachineCli}"; DestDir: "{app}"; Flags: ignoreversion; Components: "DockerMachine"
@@ -75,9 +76,12 @@ Source: "{#virtualBoxCommon}"; DestDir: "{app}\installers\virtualbox"; Component
 Source: "{#virtualBoxMsi}"; DestDir: "{app}\installers\virtualbox"; DestName: "virtualbox.msi"; AfterInstall: RunInstallVirtualBox(); Components: "VirtualBox"
 
 [Icons]
-Name: "{userprograms}\Blockstack\Blockstack Browser"; WorkingDir: "{app}"; Filename: "{pf64}\Git\bin\bash.exe"; Parameters: "--login -i ""{app}\start.sh"""; IconFilename: "{app}/blockstack.ico"; Components: "BlockstackDocker"
-Name: "{userprograms}\Blockstack\Blockstack Docker Shell"; WorkingDir: "{app}"; Filename: "{pf64}\Git\bin\bash.exe"; Parameters: "--login -i ""{app}\docker_shell.sh"""; IconFilename: "{app}/blockstack.ico"; Components: "BlockstackDocker"
-Name: "{commondesktop}\Blockstack Browser"; WorkingDir: "{app}"; Filename: "{pf64}\Git\bin\bash.exe"; Parameters: "--login -i ""{app}\start.sh"""; IconFilename: "{app}/blockstack.ico"; Tasks: desktopicon; Components: "BlockstackDocker"
+Name: "{userprograms}\Blockstack\Blockstack Browser"; WorkingDir: "{app}"; Filename: "{pf64}\Git\bin\bash.exe"; Parameters: "--login -i ""{app}\start.sh"""; IconFilename: "{app}/blockstack.ico"; Components: "Docker"
+Name: "{userprograms}\Blockstack\Blockstack Docker Shell"; WorkingDir: "{app}"; Filename: "{pf64}\Git\bin\bash.exe"; Parameters: "--login -i ""{app}\docker_shell.sh"""; IconFilename: "{app}/blockstack.ico"; Components: "Docker"
+Name: "{commondesktop}\Blockstack Browser"; WorkingDir: "{app}"; Filename: "{pf64}\Git\bin\bash.exe"; Parameters: "--login -i ""{app}\start.sh"""; IconFilename: "{app}/blockstack.ico"; Tasks: desktopicon; Components: "Docker"
+Name: "{userprograms}\Blockstack\Blockstack Browser"; WorkingDir: "{app}"; Filename: "{pf64}\Git\bin\bash.exe"; Parameters: "--login -i ""{app}\start_d4w.sh"""; IconFilename: "{app}/blockstack.ico"; Components: "BlockstackD4W"
+Name: "{userprograms}\Blockstack\Blockstack Docker Shell"; WorkingDir: "{app}"; Filename: "{pf64}\Git\bin\bash.exe"; Parameters: "--login -i ""{app}\docker_shell_d4w.sh"""; IconFilename: "{app}/blockstack.ico"; Components: "BlockstackD4W"
+Name: "{commondesktop}\Blockstack Browser"; WorkingDir: "{app}"; Filename: "{pf64}\Git\bin\bash.exe"; Parameters: "--login -i ""{app}\start_d4w.sh"""; IconFilename: "{app}/blockstack.ico"; Tasks: desktopicon; Components: "BlockstackD4W"
 
 [UninstallRun]
 Filename: "{app}\docker-machine.exe"; Parameters: "rm -f default"
@@ -166,6 +170,10 @@ function NeedToInstallVirtualBox(): Boolean;
 begin
   // TODO: Also compare versions
   Result := (
+    (not HyperVInstalled())
+    and
+    (not DockerInstalled())
+    and
     (GetEnv('VBOX_INSTALL_PATH') = '')
     and
     (GetEnv('VBOX_MSI_INSTALL_PATH') = '')
@@ -178,6 +186,16 @@ begin
     Result := GetEnv('VBOX_INSTALL_PATH')
   else
     Result := GetEnv('VBOX_MSI_INSTALL_PATH')
+end;
+
+function DockerInstalled(): Boolean;
+begin
+  Result := not DirExists('C:\Program Files\Docker')
+end;
+
+function HyperVInstalled(): Boolean;
+begin
+  Result := not DirExists('C:\Program Files\Hyper-V')
 end;
 
 function NeedToInstallGit(): Boolean;
@@ -197,10 +215,22 @@ begin
   WizardForm.WelcomeLabel2.AutoSize := True;
 
 
-    // Don't do this until we can compare versions
-    // Wizardform.ComponentsList.Checked[3] := NeedToInstallVirtualBox();
-    Wizardform.ComponentsList.ItemEnabled[3] := not NeedToInstallVirtualBox();
-    Wizardform.ComponentsList.Checked[4] := NeedToInstallGit();
+    if HyperVInstalled() and (not DockerInstalled()) then
+        // TODO: need to error out.
+        MsgBox('It looks like you have Hyper-V installed, but not Docker. In order to use Blockstack with Hyper-V, you must install Docker for Windows first.', mbCriticalError, MB_OK);
+        exit;
+    else
+      if HyperVInstalled() and DockerInstalled() then
+        Wizardform.ComponentsList.Checked[2] := False; // No Docker
+        Wizardform.ComponentsList.Checked[3] := False; // No DockerMachine
+        Wizardform.ComponentsList.Checked[4] := False; // No VirtualBox
+      else
+        Wizardform.ComponentsList.Checked[1] := False; // No Docker4Win scripts
+        Wizardform.ComponentsList.Checked[4] := NeedToInstallVirtualBox();
+        Wizardform.ComponentsList.ItemEnabled[4] := not NeedToInstallVirtualBox();
+      end;
+      Wizardform.ComponentsList.Checked[5] := NeedToInstallGit();
+    end;
 end;
 
 function InitializeSetup(): boolean;
@@ -224,14 +254,11 @@ procedure RunInstallVirtualBox();
 var
   ResultCode: Integer;
 begin
-  WizardForm.FilenameLabel.Caption := 'installing VirtualBox'
-  if IsTaskSelected('vbox_ndis5') then begin
-    if not Exec(ExpandConstant('msiexec'), ExpandConstant('/qn /i "{app}\installers\virtualbox\virtualbox.msi" NETWORKTYPE=NDIS5 /norestart'), '', SW_HIDE, ewWaitUntilTerminated, ResultCode) then
-      MsgBox('virtualbox install failure', mbInformation, MB_OK);
-  end else begin
+  if NeedToInstallVirtualBox() then
+    WizardForm.FilenameLabel.Caption := 'installing VirtualBox'
     if not Exec(ExpandConstant('msiexec'), ExpandConstant('/qn /i "{app}\installers\virtualbox\virtualbox.msi" /norestart'), '', SW_HIDE, ewWaitUntilTerminated, ResultCode) then
       MsgBox('virtualbox install failure', mbInformation, MB_OK);
-	end;
+    end;
 end;
 
 procedure RunInstallGit();

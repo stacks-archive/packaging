@@ -28,8 +28,6 @@ fi
 
 # Local Blockstack directory
 homedir=$HOME/.blockstack
-# Blockstack Directory inside container
-containerdir=/root/.blockstack
 # Name of Blockstack API container
 corecontainer=blockstack-api
 # Name of Blockstack Browser container
@@ -42,6 +40,17 @@ fi
 # set password blank so we know when to prompt
 password=0
 
+if [ $WIN_HYPERV == '1' ]; then
+    coremount_tmp="/$tmpdir":'/tmp'
+    coremount_home="/$homedir":'/root/.blockstack'
+    client_ini='//root/.blockstack/client.ini'
+    prefix='winpty'
+else
+    coremount_tmp="/$tmpdir":'/tmp'
+    coremount_home="$homedir":'/root/.blockstack'
+    client_ini='/root/.blockstack/client.ini'
+    prefix=''
+fi
 
 build () {
   echo "Building blockstack docker image. This might take a minute..."
@@ -53,10 +62,10 @@ create-wallet () {
     echo "Need to input new wallet password when running setup: ./launcher create-wallet mypass"
     exit 1
   fi
-  docker run -it -v "$homedir":$containerdir $coreimage blockstack setup -y --password $1
+  $prefix docker run -it -v $coremount_home $coreimage blockstack setup -y --password $1
 
   # Use init containers to set the API bind to 0.0.0.0
-  docker run -it -v "$homedir":$containerdir $coreimage sed -i 's/api_endpoint_bind = localhost/api_endpoint_bind = 0.0.0.0/' $containerdir/client.ini
+  $prefix docker run -it -v $coremount_home $coreimage sed -i 's/api_endpoint_bind = localhost/api_endpoint_bind = 0.0.0.0/' "$client_ini"
 }
 
 start-containers () {
@@ -91,13 +100,7 @@ start-containers () {
     fi
 
     # If there is no existing $corecontainer container, run one
-    if [[ $(uname) == 'Linux' ]]; then
-      docker run -dt --name $corecontainer -v "$tmpdir":/tmp -v "$homedir":$containerdir -p 6270:6270 $coreimage bash
-    elif [[ $(uname) == 'Darwin' ]]; then
-      docker run -dt --name $corecontainer -v "$tmpdir":/tmp -v "$homedir":$containerdir -p 6270:6270 $coreimage bash
-    elif [[ $(uname) == 'Windows' || $(uname) == 'MINGW64_NT-10.0' ]]; then
-      docker run -dt --name $corecontainer -v "$tmpdir":/tmp -v "$homedir":$containerdir -p 6270:6270 $coreimage bash
-    fi
+    docker run -dt --name $corecontainer -v $coremount_tmp -v $coremount_home -p 6270:6270 $coreimage bash
 
     if [ "$BLOCKSTACK_DEBUG" == "1" ]; then
       runcommand="blockstack api start --debug --password $password --api_password $password"
@@ -105,7 +108,7 @@ start-containers () {
       runcommand="blockstack api start --password $password --api_password $password"
     fi
 
-    docker exec -t $corecontainer $runcommand
+    $prefix docker exec -t $corecontainer $runcommand
     curl -s http://localhost:6270/v1/ping | grep -q "alive"
     running=$?
     if [ $running -ne 0 ]; then
