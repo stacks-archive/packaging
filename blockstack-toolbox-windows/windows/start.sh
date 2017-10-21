@@ -117,6 +117,22 @@ export -f docker
 
 launcher pull
 
+clear
+cat << EOF
+
+    ...     ...
+   .   .   .   .
+   ,,..    ,,..
+                    B L O C K S T A C K
+    ...     ...
+   .   .   .   .
+   ,,..    ,,..
+
+
+   Starting Blockstack daemon...
+
+EOF
+
 launcher start
 
 trap "launcher stop ; echo 'Closing'" SIGINT SIGTERM

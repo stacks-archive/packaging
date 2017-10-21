@@ -166,6 +166,16 @@ begin
   TrackEventWithProperties(name, '');
 end;
 
+function DockerInstalled(): Boolean;
+begin
+  Result := DirExists('C:\Program Files\Docker')
+end;
+
+function HyperVInstalled(): Boolean;
+begin
+  Result := DirExists('C:\Program Files\Hyper-V')
+end;
+
 function NeedToInstallVirtualBox(): Boolean;
 begin
   // TODO: Also compare versions
@@ -188,16 +198,6 @@ begin
     Result := GetEnv('VBOX_MSI_INSTALL_PATH')
 end;
 
-function DockerInstalled(): Boolean;
-begin
-  Result := not DirExists('C:\Program Files\Docker')
-end;
-
-function HyperVInstalled(): Boolean;
-begin
-  Result := not DirExists('C:\Program Files\Hyper-V')
-end;
-
 function NeedToInstallGit(): Boolean;
 begin
   // TODO: Find a better way to see if Git is installed
@@ -216,15 +216,21 @@ begin
 
 
     if HyperVInstalled() and (not DockerInstalled()) then
+    begin
         // TODO: need to error out.
         MsgBox('It looks like you have Hyper-V installed, but not Docker. In order to use Blockstack with Hyper-V, you must install Docker for Windows first.', mbCriticalError, MB_OK);
         exit;
+    end
     else
+    begin
       if HyperVInstalled() and DockerInstalled() then
+      begin
         Wizardform.ComponentsList.Checked[2] := False; // No Docker
         Wizardform.ComponentsList.Checked[3] := False; // No DockerMachine
         Wizardform.ComponentsList.Checked[4] := False; // No VirtualBox
+      end
       else
+      begin
         Wizardform.ComponentsList.Checked[1] := False; // No Docker4Win scripts
         Wizardform.ComponentsList.Checked[4] := NeedToInstallVirtualBox();
         Wizardform.ComponentsList.ItemEnabled[4] := not NeedToInstallVirtualBox();
@@ -255,10 +261,11 @@ var
   ResultCode: Integer;
 begin
   if NeedToInstallVirtualBox() then
+  begin
     WizardForm.FilenameLabel.Caption := 'installing VirtualBox'
     if not Exec(ExpandConstant('msiexec'), ExpandConstant('/qn /i "{app}\installers\virtualbox\virtualbox.msi" /norestart'), '', SW_HIDE, ewWaitUntilTerminated, ResultCode) then
       MsgBox('virtualbox install failure', mbInformation, MB_OK);
-    end;
+  end;
 end;
 
 procedure RunInstallGit();

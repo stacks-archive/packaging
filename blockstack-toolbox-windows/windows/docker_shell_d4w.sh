@@ -17,3 +17,4 @@ echo "For help getting started with Blockstack, check out https://blockstack.org
 echo
 cd
 
+exec "$BASH" --login -i

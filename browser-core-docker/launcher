@@ -40,7 +40,7 @@ fi
 # set password blank so we know when to prompt
 password=0
 
-if [ $WIN_HYPERV == '1' ]; then
+if [ "$WIN_HYPERV" == '1' ]; then
     coremount_tmp="/$tmpdir":'/tmp'
     coremount_home="/$homedir":'/root/.blockstack'
     client_ini='//root/.blockstack/client.ini'
@@ -90,8 +90,8 @@ start-containers () {
 
   # Check for the blockstack-api container is running or stopped.
   if [ "$(docker ps -q -f name=$corecontainer)" ]; then
-    echo "blockstack core container is already running"
-    exit 1
+    echo "Blockstack core container is already running -- restarting it."
+    stop
   elif [ ! "$(docker ps -q -f name=$corecontainer)" ]; then
     if [ "$(docker ps -aq -f status=exited -f name=$corecontainer)" ]; then
       # cleanup old container if its still around
@@ -103,12 +103,12 @@ start-containers () {
     docker run -dt --name $corecontainer -v $coremount_tmp -v $coremount_home -p 6270:6270 $coreimage bash
 
     if [ "$BLOCKSTACK_DEBUG" == "1" ]; then
-      runcommand="blockstack api start --debug --password $password --api_password $password"
+      runcommand="blockstack api start --debug --password $password --api_password $password 2>/dev/null"
     else
       runcommand="blockstack api start --password $password --api_password $password"
     fi
 
-    $prefix docker exec -t $corecontainer $runcommand
+    $prefix docker exec -it $corecontainer $runcommand
     curl -s http://localhost:6270/v1/ping | grep -q "alive"
     running=$?
     if [ $running -ne 0 ]; then
@@ -121,8 +121,8 @@ start-containers () {
 
   # Check for the blockstack-browser-* containers are running or stopped.
   if [ "$(docker ps -q -f name=$browsercontainer)" ]; then
-    echo "browser containers are already running"
-    exit 1
+    echo "Blockstack browser is already running -- restarting it."
+    stop
   elif [ ! "$(docker ps -q -f name=$browsercontainer)" ]; then
     if [ "$(docker ps -aq -f status=exited -f name=$browsercontainer)" ]; then
       # cleanup old containers if they are still around
@@ -151,6 +151,7 @@ stop () {
   cc=$(docker ps -f name=$corecontainer -q)
   if [ ! -z "$cc" ]; then
     echo "stopping the running blockstack-api container"
+    $prefix docker exec -dt $corecontainer blockstack api stop
     docker stop $cc
     docker rm $cc
   fi

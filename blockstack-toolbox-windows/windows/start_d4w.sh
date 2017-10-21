@@ -1,5 +1,7 @@
 #!/bin/bash
 
+trap '[ "$?" -eq 0 ] || read -p "Looks like something went wrong ... Press any key to continue..."' EXIT
+
 cat << EOF
 
     ...     ...
@@ -16,8 +18,25 @@ cat << EOF
 EOF
 
 export WIN_HYPERV=1
+set -e
 
 launcher pull
+
+clear
+cat << EOF
+
+    ...     ...
+   .   .   .   .
+   ,,..    ,,..
+                    B L O C K S T A C K
+    ...     ...
+   .   .   .   .
+   ,,..    ,,..
+
+
+   Starting Blockstack daemon...
+
+EOF
 
 launcher start
 
@@ -31,7 +50,4 @@ echo "To connect to the Blockstack browser, open http://localhost:8888 in your b
 echo
 echo "Blockstack is running. Hit Ctrl-C to Exit."
 
-while :
-do
-  sleep 60
-done
+bash --login -c 'while : ; do sleep 60; done'
