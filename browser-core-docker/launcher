@@ -103,7 +103,7 @@ start-containers () {
     docker run -dt --name $corecontainer -v $coremount_tmp -v $coremount_home -p 6270:6270 $coreimage bash
 
     if [ "$BLOCKSTACK_DEBUG" == "1" ]; then
-      runcommand="blockstack api start --debug --password $password --api_password $password 2>/dev/null"
+      runcommand="blockstack api start --debug --password $password --api_password $password"
     else
       runcommand="blockstack api start --password $password --api_password $password"
     fi
