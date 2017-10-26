@@ -64,7 +64,7 @@ start-containers () {
   elif [[ $(uname) == 'Darwin' ]]; then
     open "http://localhost:8888/#coreAPIPassword=$BLOCKSTACK_PASWD"
   elif [[ $(uname) == 'Windows' || $(uname) == 'MINGW64_NT-10.0' ]]; then
-    start "http://localhost:8888/#coreAPIPassword=$pBLOCKSTACK_PASWD"
+    start "http://localhost:8888/#coreAPIPassword=$BLOCKSTACK_PASWD"
   fi
 }
 
