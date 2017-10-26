@@ -180,11 +180,25 @@ push () {
 
 commands () {
   cat <<-EOF
+
 blockstack docker launcher commands:
+  pull  -> fetch docker containers from quay
   start -> start the blockstack browser server
-  stop -> stop the blockstack browser server
-  logs -> access the logs from the blockstack browser server
+  stop  -> stop the blockstack browser server
+  logs  -> access the logs from the blockstack browser server
   enter -> exec into the running docker container
+
+To get started, use
+
+ $  ./Blockstack-for-Linux.sh pull
+ $  ./Blockstack-for-Linux.sh start
+
+This *requires* Docker to run.
+
+And this will start the environment for running the Blockstack Browser
+
+Note: the Docker containers mount your /home/<user>/.blockstack directory
+
 EOF
 }
 
