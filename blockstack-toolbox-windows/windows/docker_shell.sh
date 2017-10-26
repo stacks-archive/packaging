@@ -1,8 +1,5 @@
 #!/bin/bash
 
-BROWSER_CONTAINER_REPO=quay.io/blockstack/blockstack-browser
-CORE_CONTAINER_REPO=quay.io/blockstack/blockstack-core
-
 trap '[ "$?" -eq 0 ] || read -p "Looks like something went wrong in step ´$STEP´... Press any key to continue..."' EXIT
 
 # TODO: I'm sure this is not very robust.  But, it is needed for now to ensure
@@ -108,7 +105,7 @@ cat << EOF
 
 EOF
 echo -e "${BLUE}docker${NC} is configured to use the ${GREEN}${VM}${NC} machine with IP ${GREEN}$(${DOCKER_MACHINE} ip ${VM})${NC}"
-echo "For help getting started, check out the docs at https://docs.docker.com"
+echo "For help getting started, check out https://blockstack.org"
 echo
 cd
 

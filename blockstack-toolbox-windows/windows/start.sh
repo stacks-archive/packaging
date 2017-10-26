@@ -1,8 +1,5 @@
 #!/bin/bash
 
-BROWSER_CONTAINER_REPO=quay.io/blockstack/blockstack-browser
-CORE_CONTAINER_REPO=quay.io/blockstack/blockstack-core
-
 trap '[ "$?" -eq 0 ] || read -p "Looks like something went wrong in step ´$STEP´... Press any key to continue..."' EXIT
 
 # TODO: I'm sure this is not very robust.  But, it is needed for now to ensure
@@ -105,6 +102,7 @@ cat << EOF
    ,,..    ,,..
 
 
+   Fetching latest Blockstack Docker Images...
 
 EOF
 echo -e "${BLUE}docker${NC} is configured to use the ${GREEN}${VM}${NC} machine with IP ${GREEN}$(${DOCKER_MACHINE} ip ${VM})${NC}"
@@ -118,6 +116,22 @@ docker () {
 export -f docker
 
 launcher pull
+
+clear
+cat << EOF
+
+    ...     ...
+   .   .   .   .
+   ,,..    ,,..
+                    B L O C K S T A C K
+    ...     ...
+   .   .   .   .
+   ,,..    ,,..
+
+
+   Starting Blockstack daemon...
+
+EOF
 
 launcher start
 

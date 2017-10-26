@@ -15,12 +15,19 @@ TAG="latest"
 
 push=false
 
+if [ "$BUILD_TAG" ]; then
+    TAG="$BUILD_TAG"
+else
+    TAG=$(git symbolic-ref -q --short HEAD || git describe --tags --exact-match)
+fi
+sed -i -e "s/TAG=latest/TAG=${TAG}/" ./dist/linux-launcher/launcher
+
+
 if [ -f azure_secrets ]; then
     echo "Secrets file found, attempting to push to Azure blob storage"
     TAG=$(git symbolic-ref -q --short HEAD || git describe --tags --exact-match)
-    sed -i -e "s/TAG=latest/TAG=${TAG}/" ./dist/linux-launcher/launcher
     . azure_secrets
-#    push=true
+    push=true
 fi
 
 if [ "$push" == "true" ]; then

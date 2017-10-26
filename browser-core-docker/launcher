@@ -12,6 +12,11 @@ export CORETAG="$TAG-browser"
 export CORE_IMAGE=quay.io/blockstack/blockstack-core:$CORETAG
 export BROWSER_IMAGE=quay.io/blockstack/blockstack-browser:$TAG
 
+# Default to setting blockstack to debug mode
+if [ "$BLOCKSTACK_DEBUG" != "0" ]; then
+    BLOCKSTACK_DEBUG=1
+fi
+
 # Local Blockstack directory
 if [ -z "${BLOCKSTACK_DATA}" ]; then
   export DATA_DIR="$HOME/.blockstack"
