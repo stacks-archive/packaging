@@ -2,6 +2,7 @@
 
 # This script provides a simple interface for folks to use the docker install
 
+# Environment variables are marked as "export" such that the "docker" and "docker-compose" commands launched from this script can see them too
 if [ -z "${BLOCKSTACK_TAG}" ]; then
   export TAG=latest
 else
