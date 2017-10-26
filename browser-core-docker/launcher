@@ -109,7 +109,7 @@ IMPORTANT: This will be used to encrypt information stored within the containers
 EOF
   echo -n "Password: " ; read -s BLOCKSTACK_PASWD ; echo
   echo -n "Repeat: " ; read -s password_repeated ; echo
-  while [ ! $BLOCKSTACK_PASWD == $password_repeated ] ; do
+  while [ "$BLOCKSTACK_PASWD" != "$password_repeated" ] ; do
     echo "Passwords do not match, please try again."
     echo -n "Password: " ; read -s BLOCKSTACK_PASWD ; echo
     echo -n "Repeat: " ; read -s password_repeated ; echo
