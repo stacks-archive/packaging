@@ -32,7 +32,7 @@ create-wallet () {
   docker run --rm -v "${DATA_DIR}":/root/.blockstack $CORE_IMAGE blockstack setup -y --password $1
 
   # Use init containers to set the API bind to 0.0.0.0
-  docker run --rm -v "${DATA_DIR}":/root/.blockstack $CORE_IMAGE sed -i 's/api_endpoint_bind = localhost/api_endpoint_bind = 0.0.0.0/' $containerdir/client.ini
+  docker run --rm -v "${DATA_DIR}":/root/.blockstack $CORE_IMAGE sed -i 's/api_endpoint_bind = localhost/api_endpoint_bind = 0.0.0.0/' /root/.blockstack/client.ini
 }
 
 start-containers () {
