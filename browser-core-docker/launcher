@@ -28,6 +28,12 @@ fi
 
 # Local Blockstack directory
 homedir=$HOME/.blockstack
+# Local Blockstack core directory
+blockstackddir=$HOME/.blockstack-server
+# Blockstackd directory inside container
+blockstackdcontainerdir=/root/.blockstack-server
+# Blockstack Directory inside container
+containerdir=/root/.blockstack
 # Name of Blockstack API container
 corecontainer=blockstack-api
 # Name of Blockstack Browser container
@@ -187,18 +193,12 @@ blockstack docker launcher commands:
   stop  -> stop the blockstack browser server
   logs  -> access the logs from the blockstack browser server
   enter -> exec into the running docker container
+  version -> print the version number
 
-To get started, use
-
- $  ./Blockstack-for-Linux.sh pull
- $  ./Blockstack-for-Linux.sh start
-
-This *requires* Docker to run.
-
-And this will start the environment for running the Blockstack Browser
-
-Note: the Docker containers mount your /home/<user>/.blockstack directory
-
+  init-core -> fast_sync a blockstack-core node
+  start-core -> start a blockstack-core node
+  stop-core -> stop a running blockstack-core node
+  pull-core -> pull the blockstack-core image
 EOF
 }
 
