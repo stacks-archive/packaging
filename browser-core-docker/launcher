@@ -250,7 +250,7 @@ create-linux-protocol-handler () {
 [Desktop Entry]
 Type=Application
 Terminal=false
-Exec=bash -c 'xdg-open http://localhost:8888/auth?authRequest=\$(echo "%u" | sed s/blockstack://)'
+Exec=bash -c 'xdg-open http://localhost:8888/auth?authRequest=\$(echo "%u" | sed s#blockstack:///##)'
 Name=Blockstack-Browser
 MimeType=x-scheme-handler/blockstack;
 EOF
