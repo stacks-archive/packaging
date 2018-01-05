@@ -137,7 +137,7 @@ start-containers () {
     if [[ $(uname) == 'Linux' ]]; then
       # let's register the protocol handler if it isn't already registered:
       create-linux-protocol-handler
-      sensible-browser "http://localhost:8888/#coreAPIPassword=$password"
+      xdg-open "http://localhost:8888/#coreAPIPassword=$password"
     elif [[ $(uname) == 'Darwin' ]]; then
       open "http://localhost:8888/#coreAPIPassword=$password"
     elif [[ $(uname) == 'Windows' || $(uname) == 'MINGW64_NT-10.0' ]]; then
