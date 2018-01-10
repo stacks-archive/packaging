@@ -25,3 +25,21 @@ $ ./launcher stop
 ```
 
 This will start the Blockstack browser and a paired `blockstack-api` daemon.
+
+# Running a different Blockstack Version
+By default this script will launch the `latest`-tagged images. To use another version, do:
+
+```bash
+$ BLOCKSTACK_TAG=v0.17.1 ./launcher pull
+$ BLOCKSTACK_TAG=v0.17.1 ./launcher start
+$ ./launcher stop
+```
+
+# Storing data elsewhere
+By default, this script creates a `$HOME/.blockstack` directory for storing all data. To move that somewhere else, use the `BLOCKSTACK_DATA` environment variable:
+
+```bash
+$ ./launcher pull
+$ BLOCKSTACK_DATA=/mnt/data/blockstack ./launcher start
+$ ./launcher stop
+```

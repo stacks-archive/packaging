@@ -1,0 +1,21 @@
+version: "2"
+services:
+  core:
+    image: "${CORE_IMAGE}"
+    volumes:
+      - "${DATA_DIR}:/root/.blockstack"
+    command: "blockstack api start-foreground --debug --password ${BLOCKSTACK_PASWD} --api_password ${BLOCKSTACK_PASWD}"
+    ports:
+      - "6270:6270"
+  browser-static:
+    image: "${BROWSER_IMAGE}"
+    command: "blockstack-browser"
+    ports:
+      - "8888:8888"
+  browser-cors:
+    image: "${BROWSER_IMAGE}"
+    command: "blockstack-cors-proxy"
+    environment:
+      CORSPROXY_HOST: "0.0.0.0"
+    ports:
+      - "1337:1337"
