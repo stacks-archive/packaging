@@ -172,12 +172,12 @@ stop () {
 
 enter () {
   echo "entering docker container"
-  docker exec -it $browsercontainer-static /bin/bash
+  docker exec -it $corecontainer /bin/bash
 }
 
 logs () {
   echo "streaming logs for blockstack-api container"
-  docker logs $browsercontainer-static -f
+  docker logs $corecontainer -f
 }
 
 push () {
