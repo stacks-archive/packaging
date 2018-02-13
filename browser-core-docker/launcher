@@ -68,6 +68,12 @@ create-wallet () {
   $prefix docker run -it -v $coremount_home $coreimage sed -i 's/api_endpoint_bind = localhost/api_endpoint_bind = 0.0.0.0/' "$client_ini"
 }
 
+clear-registrar-lockfile () {
+  # remove core's registrar lockfile. this can lead to problems if core starts up with the same
+  # pid as an old version.
+  $prefix docker run -it -v $coremount_home -v $coremount_tmp $coreimage rm -f /tmp/registrar.lock
+}
+
 start-containers () {
   # Check for args first
   if [ $# -ne 0 ]; then
@@ -100,6 +106,7 @@ start-containers () {
     fi
 
     # If there is no existing $corecontainer container, run one
+    clear-registrar-lockfile
     docker run -dt --name $corecontainer -v $coremount_tmp -v $coremount_home -p 6270:6270 $coreimage bash
 
     if [ "$BLOCKSTACK_DEBUG" == "1" ]; then
@@ -137,7 +144,7 @@ start-containers () {
     if [[ $(uname) == 'Linux' ]]; then
       # let's register the protocol handler if it isn't already registered:
       create-linux-protocol-handler
-      sensible-browser "http://localhost:8888/#coreAPIPassword=$password"
+      xdg-open "http://localhost:8888/#coreAPIPassword=$password"
     elif [[ $(uname) == 'Darwin' ]]; then
       open "http://localhost:8888/#coreAPIPassword=$password"
     elif [[ $(uname) == 'Windows' || $(uname) == 'MINGW64_NT-10.0' ]]; then
