@@ -55,8 +55,8 @@ start-containers () {
     fi
 
     # If there are no existing blockstack-browser-* containers, run them
-    docker run -d --name $browsercontainer-static -p localhost:8888:8888 $browserimage blockstack-browser
-    docker run -d --name $browsercontainer-cors  -e CORSPROXY_HOST="0.0.0.0" -p localhost:1337:1337 $browserimage blockstack-cors-proxy
+    docker run -d --name $browsercontainer-static -p 127.0.0.1:8888:8888 $browserimage blockstack-browser
+    docker run -d --name $browsercontainer-cors  -e CORSPROXY_HOST="0.0.0.0" -p 127.0.0.1:1337:1337 $browserimage blockstack-cors-proxy
 
     if [[ $(uname) == 'Linux' ]]; then
       # let's register the protocol handler if it isn't already registered:
