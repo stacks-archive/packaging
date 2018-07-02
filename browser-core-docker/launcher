@@ -113,22 +113,28 @@ version () {
 
 create-linux-protocol-handler () {
     HANDLER="blockstack.desktop"
-    if [ ! -e "$HOME/.local/share/applications/$HANDLER" ]; then
-       echo "Registering protocol handler"
-       if [ ! -e "$HOME/.local/share/applications/" ]; then
-          mkdir -p "$HOME/.local/share/applications/"
-       fi
-       cat - > "$HOME/.local/share/applications/$HANDLER" <<EOF
+    HANDLER_SCRIPT="blockstack-protocol-handler"
+    echo "Registering protocol handler"
+    if [ ! -e "$HOME/.local/share/applications/" ]; then
+        mkdir -p "$HOME/.local/share/applications/"
+    fi
+    cat - > "$HOME/.local/share/applications/$HANDLER_SCRIPT" <<EOF
+#!/bin/bash
+AUTH=\$(echo "\$1" | sed s#/##g | sed s/blockstack:// | sed 's/ //g')
+xdg-open "http://localhost:8888/auth?authRequest=\${AUTH}"
+EOF
+    chmod +x "$HOME/.local/share/applications/$HANDLER_SCRIPT"
+
+    cat - > "$HOME/.local/share/applications/$HANDLER" <<EOF
 [Desktop Entry]
 Type=Application
 Terminal=false
-Exec=bash -c 'xdg-open http://localhost:8888/auth?authRequest=\$(echo "%u" | sed s#blockstack://## | sed s/blockstack://)'
+Exec=$HOME/.local/share/applications/$HANDLER_SCRIPT %u
 Name=Blockstack-Browser
 MimeType=x-scheme-handler/blockstack;
 EOF
-       chmod +x "$HOME/.local/share/applications/$HANDLER"
-       xdg-mime default "$HANDLER" x-scheme-handler/blockstack
-    fi
+    chmod +x "$HOME/.local/share/applications/$HANDLER"
+    xdg-mime default "$HANDLER" x-scheme-handler/blockstack
 }
 
 case $1 in
